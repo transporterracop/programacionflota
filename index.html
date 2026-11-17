@@ -161,6 +161,31 @@ thead .c1,thead .c2,thead .c3{z-index:7}
 .edon .ev .bd{padding-right:20px}
 .edon .ev .pen{width:16px!important;height:16px!important;right:4px!important;bottom:4px!important}
 .edon .ev .pen svg{width:10px;height:10px}
+/* ===== Arrastrar y soltar ===== */
+.edon #body .ev:not(.ev-off){cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.drag-h{position:absolute;left:3px;top:50%;transform:translateY(-50%);width:16px;height:30px;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:14px;cursor:grab;border-radius:4px;user-select:none;touch-action:none}
+.drag-h:hover{background:#e2e8f0;color:#0f2440}
+.edon td.c1ed{padding-left:22px}
+.arrastrando,.arrastrando *{cursor:grabbing!important;user-select:none!important}
+.fantasma{position:fixed;left:0;top:0;z-index:90;pointer-events:none;opacity:.92;filter:drop-shadow(0 10px 20px rgba(0,0,0,.35));transform-origin:0 0}
+.fantasma .ev{margin:0;background:#fff;transform:rotate(-2deg)}
+.fantasma .pen{display:none!important}
+.gbadge{position:absolute;left:8px;top:-22px;background:#16a34a;color:#fff;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:999px;white-space:nowrap;letter-spacing:.3px}
+.gbadge:empty{display:none}.gbadge.w{background:#ea580c}
+.gfila{background:#0f2440;color:#fff;font-weight:800;font-size:12px;padding:9px 14px;border-radius:9px;border:2px solid #22c55e;white-space:nowrap}
+.linea-drop{position:fixed;height:4px;background:#22c55e;border-radius:2px;z-index:85;pointer-events:none;box-shadow:0 0 0 3px rgba(34,197,94,.25)}
+.ev.origen{opacity:.35;outline:2px dashed #94a3b8}
+tr.origen-fila td{opacity:.4}
+td.dz-ok{background:#dcfce7!important;box-shadow:inset 0 0 0 2px #16a34a}
+td.dz-warn{background:#ffedd5!important;box-shadow:inset 0 0 0 2px #ea580c}
+td.dz-ocup{background:#dbeafe!important;box-shadow:inset 0 0 0 2px #2563eb}
+.guardando #body{opacity:.7;pointer-events:none}
+.toast{display:flex;align-items:center;gap:12px}
+.tbtn{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:7px;padding:4px 10px;font-weight:800;font-size:12px;cursor:pointer;font-family:inherit}
+.rcard{background:#12233d;border:1px solid #1f3a5f;border-radius:8px;padding:9px 11px;font-size:12px;line-height:1.55}
+.rcard .rt{font-weight:800;display:flex;align-items:center;gap:7px;text-transform:uppercase;letter-spacing:.4px;font-size:11px}
+.rcard .rt i{width:9px;height:9px;border-radius:50%}
+.rcard .rs{color:#8ba2be;font-size:11px}
 </style>
 <style id='dynCss'></style>
 </head>
@@ -358,7 +383,7 @@ function render() {
       const logo = src
         ? `<div class='logoimg'><img src='${esc(src)}' alt='${esc(fl.cliente)}' data-bg='${esc(col)}' data-fg='${esc(fg)}' data-ini='${ini}' onerror='logoFail(this)'></div>`
         : `<div class='logo' style='background:${esc(col)};color:${esc(fg)}'>${ini}</div>`;
-      let tds = `<td class='c1${EDIT ? ' c1ed' : ''}' data-filaed='${fl.id}'>${EDIT ? `<span class='pen pen-c'>${SVG_PEN}</span>` : ''}<div class='cli'><div class='nm'>${esc(fl.cliente)}</div>${logo}</div></td><td class='c2 od'>${esc(fl.origen)}</td><td class='c3 od'>${esc(fl.destino)}</td>`;
+      let tds = `<td class='c1${EDIT ? ' c1ed' : ''}' data-filaed='${fl.id}'>${EDIT ? `<span class='drag-h' title='Arrastrar para cambiar la posición de la fila'>⠿</span><span class='pen pen-c'>${SVG_PEN}</span>` : ''}<div class='cli'><div class='nm'>${esc(fl.cliente)}</div>${logo}</div></td><td class='c2 od'>${esc(fl.origen)}</td><td class='c3 od'>${esc(fl.destino)}</td>`;
       tds += DIAS.map(f => {
         const p = celdas[fl.id + '|' + f], st = estadoDia(f);
         if (!p) return `<td class='day' data-f='${f}' data-fila='${fl.id}'><div class='ev ev-off' data-con='S/M'><div class='bd'><div class='li off-li'>${EDIT ? '<span class="add">＋ Asignar</span>' : 'Sin movimiento'}</div></div></div></td>`;
@@ -463,11 +488,16 @@ async function api(accion, datos) {
 async function recargar() { await cargar(rangoManual && DB ? DB.desde : undefined, rangoManual && DB ? DB.hasta : undefined); }
 
 // ---------- Avisos ----------
-function aviso(txt, tipo) {
+function aviso(txt, tipo, accion) {
   let t = $('toast');
   if (!t) { t = document.createElement('div'); t.id = 'toast'; document.body.appendChild(t); }
-  t.className = 'toast ' + (tipo || 'ok'); t.textContent = txt; t.style.opacity = '1';
-  clearTimeout(t._h); t._h = setTimeout(() => { t.style.opacity = '0'; }, tipo === 'err' ? 6000 : 2800);
+  t.className = 'toast ' + (tipo || 'ok'); t.textContent = txt; t.style.opacity = '1'; t.style.pointerEvents = 'auto';
+  if (accion) {
+    const b = document.createElement('button'); b.className = 'tbtn'; b.textContent = accion.texto;
+    b.onclick = () => { t.style.opacity = '0'; t.style.pointerEvents = 'none'; accion.fn(); };
+    t.appendChild(b);
+  }
+  clearTimeout(t._h); t._h = setTimeout(() => { t.style.opacity = '0'; t.style.pointerEvents = 'none'; }, accion ? 9000 : (tipo === 'err' ? 6000 : 2800));
 }
 
 // ---------- Ventanas modales ----------
@@ -554,6 +584,7 @@ function filaAgregar() {
 // Clic en tarjetas / celdas / cliente
 document.addEventListener('click', e => {
   if (!EDIT || !DB) return;
+  if (Date.now() - (window._finArrastre || 0) < 350 || e.target.closest('.drag-h')) return; // fue un arrastre, no un clic
   const td = e.target.closest('#body td.day[data-fila]');
   if (td) { editarCelda(td.dataset.fila, td.dataset.f); return; }
   const c1 = e.target.closest('#body td.c1[data-filaed]');
@@ -563,10 +594,11 @@ document.addEventListener('click', e => {
 // ============================================================
 //  EDITAR UN DÍA
 // ============================================================
-function cruces(filaId, fecha, conductor, tracto, semi) {
+function cruces(filaId, fecha, conductor, tracto, semi, excluir) {
   const out = [], fila = id => DB.filas.find(f => f.id === id) || {};
   DB.programacion.forEach(p => {
     if (p.fecha !== fecha || p.filaId === filaId) return;
+    if (excluir && excluir.indexOf(p.filaId + '|' + p.fecha) >= 0) return;
     const fl = fila(p.filaId), donde = `${fl.cliente} · ${fl.origen} → ${fl.destino}`;
     if (tracto && p.tracto === tracto) out.push(`${tracto} ya está asignado en ${donde}`);
     if (semi && p.semi === semi) out.push(`${semi} ya está asignado en ${donde}`);
@@ -878,6 +910,209 @@ function montarConfig() {
     await api('guardarConfig', { config: { Titulo: $('cfTit').value, Empresa: $('cfEmp').value, DiasAtras: $('cfAtr').value, DiasAdelante: $('cfAde').value } });
     rangoManual = false; await cargar(); aviso('Configuración guardada'); maestros('Config');
   });
+}
+
+/* ============================================================
+   ARRASTRAR Y SOLTAR (solo en modo edición)
+   - Filas: desde la manilla ⠿ de la celda del cliente.
+   - Tarjetas: mover · Ctrl = copiar · sobre día ocupado pregunta Intercambiar / Reemplazar.
+   Mouse: arrastre directo. Pantallas táctiles: mantener presionado ~0,4 s.
+   ============================================================ */
+let ARR = null;            // arrastre en curso
+const UMBRAL_PX = 6, PULSACION_MS = 400, BORDE_SCROLL = 70;
+
+document.addEventListener('pointerdown', e => {
+  if (!EDIT || !DB || e.button > 0 || $('ovl')) return;
+  const asa = e.target.closest('#body .drag-h');
+  const card = !asa && e.target.closest('#body td.day[data-fila] .ev:not(.ev-off)');
+  if (!asa && !card) return;
+  const td = card ? card.closest('td') : null;
+  ARR = {
+    tipo: asa ? 'fila' : 'tarjeta', x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, activo: false,
+    tactil: e.pointerType === 'touch', filaId: asa ? asa.closest('td').dataset.filaed : td.dataset.fila,
+    fecha: td ? td.dataset.f : null, origenEl: asa ? asa.closest('tr') : card
+  };
+  if (ARR.tactil) ARR.timer = setTimeout(() => { if (ARR && !ARR.activo) iniciarArrastre(); }, PULSACION_MS);
+  if (asa) e.preventDefault();
+});
+document.addEventListener('pointermove', e => {
+  if (!ARR) return;
+  ARR.x = e.clientX; ARR.y = e.clientY; ARR.ctrl = e.ctrlKey || e.metaKey;
+  const d = Math.hypot(e.clientX - ARR.x0, e.clientY - ARR.y0);
+  if (!ARR.activo) {
+    if (ARR.tactil) { if (d > 10) cancelarArrastre(); return; }   // en táctil, moverse antes de tiempo = desplazar pantalla
+    if (d < UMBRAL_PX) return;
+    iniciarArrastre();
+  }
+  e.preventDefault();
+  moverFantasma(); actualizarDestino();
+});
+document.addEventListener('pointerup', e => { if (ARR) { ARR.ctrl = e.ctrlKey || e.metaKey; terminarArrastre(); } });
+document.addEventListener('pointercancel', () => { if (ARR && !ARR.activo) cancelarArrastre(); });
+document.addEventListener('keydown', e => { if (ARR && ARR.activo && e.key === 'Escape') { cancelarArrastre(); aviso('Arrastre cancelado'); } });
+document.addEventListener('touchmove', e => { if (ARR && ARR.activo) e.preventDefault(); }, { passive: false });
+document.addEventListener('contextmenu', e => { if (ARR) e.preventDefault(); });
+document.addEventListener('keydown', e => { if (ARR && ARR.activo && (e.key === 'Control' || e.key === 'Meta')) { ARR.ctrl = true; actualizarDestino(); } });
+document.addEventListener('keyup', e => { if (ARR && ARR.activo && (e.key === 'Control' || e.key === 'Meta')) { ARR.ctrl = false; actualizarDestino(); } });
+
+function iniciarArrastre() {
+  ARR.activo = true;
+  document.body.classList.add('arrastrando');
+  const g = document.createElement('div'); g.className = 'fantasma';
+  if (ARR.tipo === 'tarjeta') {
+    const r = ARR.origenEl.getBoundingClientRect();
+    g.style.width = r.width + 'px';
+    g.appendChild(ARR.origenEl.cloneNode(true));
+    ARR.dx = ARR.x0 - r.left; ARR.dy = ARR.y0 - r.top;
+    ARR.origenEl.classList.add('origen');
+    g.insertAdjacentHTML('beforeend', `<span class='gbadge'></span>`);
+  } else {
+    const fl = DB.filas.find(f => f.id === ARR.filaId) || {};
+    g.innerHTML = `<div class='gfila'>⠿ ${esc(fl.cliente)} · ${esc(fl.origen)} → ${esc(fl.destino)}</div>`;
+    ARR.dx = 20; ARR.dy = 18;
+    ARR.origenEl.classList.add('origen-fila');
+    const l = document.createElement('div'); l.className = 'linea-drop'; document.body.appendChild(l); ARR.linea = l;
+  }
+  document.body.appendChild(g); ARR.fantasma = g;
+  if (navigator.vibrate && ARR.tactil) navigator.vibrate(30);
+  moverFantasma(); actualizarDestino(); autoScroll();
+}
+function moverFantasma() {
+  if (!ARR.fantasma) return;
+  ARR.fantasma.style.transform = `translate(${ARR.x - ARR.dx}px, ${ARR.y - ARR.dy}px)`;
+}
+function limpiarMarcas() {
+  document.querySelectorAll('.dz-ok,.dz-warn,.dz-ocup').forEach(x => x.classList.remove('dz-ok', 'dz-warn', 'dz-ocup'));
+}
+function asignacion(filaId, fecha) { return DB.programacion.find(p => p.filaId === filaId && p.fecha === fecha) || null; }
+
+// Calcula y resalta el destino bajo el puntero
+function actualizarDestino() {
+  if (!ARR || !ARR.activo) return;
+  if (ARR.fantasma) ARR.fantasma.style.display = 'none';
+  const el = document.elementFromPoint(ARR.x, ARR.y);
+  if (ARR.fantasma) ARR.fantasma.style.display = '';
+  if (ARR.tipo === 'fila') return destinoFila();
+  limpiarMarcas(); ARR.destino = null;
+  const td = el && el.closest('#body td.day[data-fila]');
+  const badge = ARR.fantasma.querySelector('.gbadge');
+  if (!td || (td.dataset.fila === ARR.filaId && td.dataset.f === ARR.fecha)) { badge.textContent = ''; return; }
+  const src = asignacion(ARR.filaId, ARR.fecha), dst = asignacion(td.dataset.fila, td.dataset.f);
+  // Al mover, la tarjeta de origen deja de existir; al copiar, sigue ahí y sí cuenta como cruce
+  const excl = [td.dataset.fila + '|' + td.dataset.f].concat(ARR.ctrl ? [] : [ARR.filaId + '|' + ARR.fecha]);
+  const avisos = cruces(td.dataset.fila, td.dataset.f, src.conductor, src.tracto, src.semi, excl);
+  td.classList.add(dst ? 'dz-ocup' : (avisos.length ? 'dz-warn' : 'dz-ok'));
+  ARR.destino = { filaId: td.dataset.fila, fecha: td.dataset.f, ocupado: !!dst, avisos };
+  badge.textContent = (ARR.ctrl ? '＋ Copiar' : 'Mover') + (dst ? ' · día ocupado' : '') + (avisos.length ? ' · ⚠ cruce' : '');
+  badge.className = 'gbadge' + (avisos.length ? ' w' : '');
+}
+function destinoFila() {
+  const filas = [...document.querySelectorAll('#body tr[data-cli]')].filter(tr => tr.style.display !== 'none');
+  if (!filas.length) return;
+  let idx = filas.length;
+  for (let i = 0; i < filas.length; i++) {
+    const r = filas[i].getBoundingClientRect();
+    if (ARR.y < r.top + r.height / 2) { idx = i; break; }
+  }
+  const ref = idx < filas.length ? filas[idx].getBoundingClientRect().top : filas[filas.length - 1].getBoundingClientRect().bottom;
+  const caja = document.querySelector('.scroll').getBoundingClientRect();
+  Object.assign(ARR.linea.style, { top: (ref - 2) + 'px', left: caja.left + 'px', width: caja.width + 'px' });
+  const idDest = idx < filas.length ? filas[idx].querySelector('td.c1').dataset.filaed : null;
+  ARR.destino = { antesDe: idDest };
+}
+// Desplaza la tabla cuando el puntero se acerca a sus bordes
+function autoScroll() {
+  if (!ARR || !ARR.activo) return;
+  const sc = document.querySelector('.scroll'), r = sc.getBoundingClientRect();
+  let dx = 0, dy = 0;
+  if (ARR.x < r.left + BORDE_SCROLL + 280 && ARR.x > r.left + 280 && ARR.tipo === 'tarjeta') dx = -14;   // 280 = columnas fijas
+  if (ARR.x > r.right - BORDE_SCROLL) dx = 14;
+  if (ARR.y < r.top + BORDE_SCROLL) dy = -12;
+  if (ARR.y > r.bottom - BORDE_SCROLL) dy = 12;
+  if (dx || dy) { sc.scrollLeft += dx; sc.scrollTop += dy; actualizarDestino(); }
+  ARR.raf = requestAnimationFrame(autoScroll);
+}
+function cancelarArrastre() {
+  if (!ARR) return;
+  clearTimeout(ARR.timer); cancelAnimationFrame(ARR.raf);
+  if (ARR.fantasma) ARR.fantasma.remove();
+  if (ARR.linea) ARR.linea.remove();
+  if (ARR.origenEl) ARR.origenEl.classList.remove('origen', 'origen-fila');
+  limpiarMarcas(); document.body.classList.remove('arrastrando');
+  if (ARR.activo) window._finArrastre = Date.now();
+  ARR = null;
+}
+function terminarArrastre() {
+  const a = ARR;
+  if (!a.activo) { cancelarArrastre(); return; }
+  actualizarDestino();
+  const dest = a.destino, copiar = !!a.ctrl;
+  cancelarArrastre();
+  if (!dest) return;
+  if (a.tipo === 'fila') return soltarFila(a.filaId, dest.antesDe);
+  soltarTarjeta(a.filaId, a.fecha, dest, copiar);
+}
+
+// ---------- Filas ----------
+function soltarFila(id, antesDe) {
+  const antes = DB.filas.map(f => f.id);
+  const ids = antes.filter(x => x !== id);
+  const pos = antesDe ? ids.indexOf(antesDe) : ids.length;
+  ids.splice(pos < 0 ? ids.length : pos, 0, id);
+  if (ids.join() === antes.join()) return;
+  guardarOrden(ids, antes, 'Fila movida');
+}
+async function guardarOrden(ids, previo, msg) {
+  // Se muestra de inmediato y luego se confirma con la base
+  DB.filas.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id)); render();
+  try {
+    await api('ordenarFilas', { ids }); await recargar();
+    aviso(msg, 'ok', previo ? { texto: 'Deshacer', fn: () => guardarOrden(previo, null, 'Orden restaurado') } : null);
+  } catch (e) { aviso(e.message, 'err'); await recargar(); }
+}
+
+// ---------- Tarjetas ----------
+function datosCelda(filaId, fecha, p) {
+  return p ? { filaId, fecha, estado: p.estado, tipo: p.tipo, conductor: p.conductor, tracto: p.tracto, semi: p.semi } : { filaId, fecha, estado: 'SM' };
+}
+function soltarTarjeta(filaId, fecha, dest, copiar) {
+  const src = asignacion(filaId, fecha), dst = asignacion(dest.filaId, dest.fecha);
+  if (!src) return;
+  const previo = [datosCelda(filaId, fecha, src), datosCelda(dest.filaId, dest.fecha, dst)];
+  const mover = modo => {
+    const celdas = [datosCelda(dest.filaId, dest.fecha, src)];
+    if (modo === 'intercambiar') celdas.push(datosCelda(filaId, fecha, dst));
+    else if (!copiar) celdas.push({ filaId, fecha, estado: 'SM' });
+    const msg = { intercambiar: 'Tarjetas intercambiadas', reemplazar: copiar ? 'Tarjeta copiada (destino reemplazado)' : 'Tarjeta movida (destino reemplazado)', libre: copiar ? 'Tarjeta copiada' : 'Tarjeta movida' }[modo];
+    guardarMovimiento(celdas, previo, msg + (dest.avisos.length ? ' · ⚠ ' + dest.avisos[0] : ''));
+  };
+  if (!dst) return mover('libre');
+  preguntarOcupado(src, dst, dest, copiar, mover);
+}
+function resumen(p, filaId, fecha) {
+  const fl = DB.filas.find(f => f.id === filaId) || {};
+  const est = (DB.estados.find(e => e.codigo === p.estado) || {});
+  return `<div class='rcard'><div class='rt'><i style='background:${esc(est.color || '#94a3b8')}'></i>${esc(est.nombre || p.estado)}${p.tipo ? ' · ' + esc((DB.tiposServicio.find(t => t.codigo === p.tipo) || {}).nombre || p.tipo) : ''}</div>
+    <div>${esc(p.conductor)} · ${esc([p.tracto, p.semi].filter(Boolean).join(' / ') || '-')}</div>
+    <div class='rs'>${esc(fl.cliente)} · ${esc(fl.origen)} → ${esc(fl.destino)} · ${diaTxt(fecha)}</div></div>`;
+}
+function preguntarOcupado(src, dst, dest, copiar, mover) {
+  abrirModal('El día de destino ya tiene una asignación', '¿Qué quieres hacer?', `
+    <div class='full'><div class='fl'>Tarjeta que arrastraste</div>${resumen(src, src.filaId, src.fecha)}</div>
+    <div class='full'><div class='fl'>Asignación que está en el destino</div>${resumen(dst, dest.filaId, dest.fecha)}</div>
+    ${dest.avisos.length ? `<div class='full warn'>⚠ ${dest.avisos.map(esc).join('<br>⚠ ')}</div>` : ''}
+    <div class='full hint2'>${copiar ? '' : '<b>Intercambiar:</b> cada tarjeta queda en el lugar de la otra. '}<b>Reemplazar:</b> la asignación del destino se borra${copiar ? ' (la original se mantiene, porque estás copiando)' : ' y el día de origen queda sin movimiento'}.</div>`,
+    `<span class='sp'></span><button class='eb eb-g' data-cerrar>Cancelar</button>${copiar ? '' : `<button class='eb eb-s' id='dInt'>⇄ Intercambiar</button>`}<button class='eb eb-r' id='dRep'>Reemplazar</button>`, 520);
+  if ($('dInt')) $('dInt').onclick = () => { cerrarModal(); mover('intercambiar'); };
+  $('dRep').onclick = () => { cerrarModal(); mover('reemplazar'); };
+}
+async function guardarMovimiento(celdas, previo, msg) {
+  try {
+    document.body.classList.add('guardando');
+    await api('guardarCeldas', { celdas }); await recargar();
+    aviso(msg, 'ok', previo ? { texto: 'Deshacer', fn: () => guardarMovimiento(previo, null, 'Movimiento deshecho') } : null);
+  } catch (e) { aviso(e.message, 'err'); await recargar(); }
+  finally { document.body.classList.remove('guardando'); }
 }
 
 </script>
