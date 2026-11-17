@@ -186,6 +186,8 @@ td.dz-ocup{background:#dbeafe!important;box-shadow:inset 0 0 0 2px #2563eb}
 .rcard .rt{font-weight:800;display:flex;align-items:center;gap:7px;text-transform:uppercase;letter-spacing:.4px;font-size:11px}
 .rcard .rt i{width:9px;height:9px;border-radius:50%}
 .rcard .rs{color:#8ba2be;font-size:11px}
+.eb-c{background:#0e7490;color:#fff}
+.ktxt{font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.6;resize:vertical;white-space:pre-wrap}
 </style>
 <style id='dynCss'></style>
 </head>
@@ -571,10 +573,11 @@ function despuesDeRender() {
   bar.className = 'edbar';
   bar.innerHTML = `<span class='pill'><i></i>Modo edición</span><span class='who'>${esc(EDIT.nombre)} · ${EDIT.rol === 'admin' ? 'Administrador' : 'Editor'}</span><span class='sp'></span>
     <button class='eb eb-p' id='bNuevo'>＋ Nuevo viaje</button><button class='eb eb-s' id='bCopiar'>⧉ Copiar días</button>
-    <button class='eb eb-r' id='bFS'>⛔ Fuera de servicio</button><button class='eb eb-g' id='bMae'>⚙ Maestros</button><button class='eb eb-g' id='bSalir'>Salir</button>`;
+    <button class='eb eb-r' id='bFS'>⛔ Fuera de servicio</button><button class='eb eb-c' id='bCopDat'>📋 Copiar datos</button><button class='eb eb-g' id='bMae'>⚙ Maestros</button><button class='eb eb-g' id='bSalir'>Salir</button>`;
   $('bNuevo').onclick = () => editarFila(null);
   $('bCopiar').onclick = copiarDias;
   $('bFS').onclick = () => fueraServicio();
+  $('bCopDat').onclick = () => copiarDatos();
   $('bMae').onclick = () => maestros('Conductores');
   $('bSalir').onclick = () => salirEdicion(false);
 }
@@ -626,7 +629,7 @@ function editarCelda(filaId, fecha) {
     <div class='dep'><div class='fl'>Semirremolque</div><select id='eSem' class='inp'>${opciones([['', '—'], ['DEFINIR', 'POR DEFINIR']].concat(sem), p.semi || '')}</select></div>
     <div class='full' id='eWarn'></div>
     <div class='full rep'><label><input type='checkbox' id='eRep'> Repetir hasta</label><input type='date' id='eHasta' class='inp sm' min='${sumarDias(fecha, 1)}' value='${sumarDias(fecha, 3)}' disabled><span class='hint2' id='eRepN'></span></div>`,
-    `${p.estado ? `<button class='eb del' id='eDel'>Dejar sin movimiento</button>` : ''}<span class='sp'></span><button class='eb eb-g' data-cerrar>Cancelar</button><button class='eb eb-p' id='eOk'>Guardar</button>`);
+    `${p.estado ? `<button class='eb del' id='eDel'>Dejar sin movimiento</button><button class='eb eb-c' id='eCop' title='Copiar conductor y patentes de esta tarjeta'>📋</button>` : ''}<span class='sp'></span><button class='eb eb-g' data-cerrar>Cancelar</button><button class='eb eb-p' id='eOk'>Guardar</button>`);
   const fechas = () => {
     if (!$('eRep').checked) return [fecha];
     const h = $('eHasta').value, out = [];
@@ -656,6 +659,7 @@ function editarCelda(filaId, fecha) {
   });
   $('eOk').addEventListener('click', e => guardar(e.target, false));
   if ($('eDel')) $('eDel').addEventListener('click', e => guardar(e.target, true));
+  if ($('eCop')) $('eCop').addEventListener('click', () => copiarDatos({ conductor: $('eCon').value, tracto: $('eTra').value, semi: $('eSem').value }));
 }
 
 // ============================================================
@@ -778,7 +782,7 @@ function copiarDias() {
 //  MAESTROS
 // ============================================================
 const MAE = {
-  Conductores:    { tit: 'Conductores', uno: 'conductor', clave: 'nombre', lista: () => DB.conductores, campos: [['nombre', 'Nombre', 'text'], ['activo', 'Activo', 'bool']] },
+  Conductores:    { tit: 'Conductores', uno: 'conductor', clave: 'nombre', lista: () => CONDUCTORES, campos: [['nombre', 'Nombre corto (el de las tarjetas)', 'text'], ['nombreCompleto', 'Nombre completo', 'text'], ['rut', 'RUT', 'text'], ['telefono', 'Teléfono', 'text'], ['activo', 'Activo', 'bool']] },
   Tractos:        { tit: 'Tractos', uno: 'tracto', clave: 'patente', lista: () => DB.tractos, campos: [['patente', 'Patente', 'text'], ['propio', 'Propio (se cuenta en disponibles)', 'bool'], ['activo', 'Activo', 'bool']] },
   Semirremolques: { tit: 'Semirremolques', uno: 'semirremolque', clave: 'patente', lista: () => DB.semirremolques, campos: [['patente', 'Patente', 'text'], ['activo', 'Activo', 'bool']] },
   Clientes:       { tit: 'Clientes', uno: 'cliente', clave: 'nombre', lista: () => DB.clientes, campos: [['nombre', 'Nombre', 'text'], ['logo', 'Logo', 'logo'], ['color', 'Color del círculo (sin logo)', 'color'], ['colorInicial', 'Color de la inicial', 'color'], ['activo', 'Activo', 'bool']] },
@@ -788,12 +792,17 @@ const MAE = {
   Config:         { tit: 'Configuración', admin: true }
 };
 let USUARIOS = [];
+let CONDUCTORES = [];   // con RUT y teléfono: solo se piden con PIN y viven en memoria
+async function cargarConductores() { CONDUCTORES = (await api('datosConductores')).conductores; return CONDUCTORES; }
 
 async function maestros(tipo, editar) {
   const m = MAE[tipo];
   if (m.admin && EDIT.rol !== 'admin') { aviso('Solo un administrador puede ver esta sección', 'err'); return; }
-  if (tipo === 'Usuarios' && editar === undefined) {
-    try { USUARIOS = (await api('listarUsuarios')).usuarios; } catch (e) { aviso(e.message, 'err'); return; }
+  if (editar === undefined && (tipo === 'Usuarios' || tipo === 'Conductores')) {
+    try {
+      if (tipo === 'Usuarios') USUARIOS = (await api('listarUsuarios')).usuarios;
+      else await cargarConductores();
+    } catch (e) { aviso(e.message, 'err'); return; }
   }
   const tabs = Object.keys(MAE).filter(k => !MAE[k].admin || EDIT.rol === 'admin')
     .map(k => `<button class='tab${k === tipo ? ' on' : ''}' data-tab='${k}'>${MAE[k].tit}</button>`).join('');
@@ -910,6 +919,48 @@ function montarConfig() {
     await api('guardarConfig', { config: { Titulo: $('cfTit').value, Empresa: $('cfEmp').value, DiasAtras: $('cfAtr').value, DiasAdelante: $('cfAde').value } });
     rangoManual = false; await cargar(); aviso('Configuración guardada'); maestros('Config');
   });
+}
+
+// ============================================================
+//  COPIAR DATOS (conductor + tracto + semirremolque) — solo con PIN
+// ============================================================
+let _formatoCopia = 'lineas';
+async function copiarDatos(pre) {
+  try { await cargarConductores(); } catch (e) { aviso(e.message, 'err'); return; }
+  pre = pre || {};
+  const cond = CONDUCTORES.filter(c => c.activo || c.nombre === pre.conductor);
+  const tra = activos(DB.tractos, 'patente', pre.tracto), sem = activos(DB.semirremolques, 'patente', pre.semi);
+  abrirModal('📋 Copiar datos', 'Elige conductor y equipo; el texto queda listo para pegar', `
+    <div class='full'><div class='fl'>Conductor</div><select id='kCon' class='inp'>${opciones(cond.map(c => [c.nombre, c.nombreCompleto ? `${c.nombreCompleto} (${c.nombre})` : c.nombre]), pre.conductor, '— Elegir conductor —')}</select></div>
+    <div><div class='fl'>Patente tracto</div><select id='kTra' class='inp'>${opciones(tra, pre.tracto, '— Elegir —')}</select></div>
+    <div><div class='fl'>Patente semirremolque</div><select id='kSem' class='inp'>${opciones(sem, pre.semi, '— Elegir —')}</select></div>
+    <div class='full'><div class='fl'>Formato</div><div class='chips' id='kFmt'><button class='chip${_formatoCopia === 'lineas' ? ' on' : ''}' data-k='lineas'>Varias líneas</button><button class='chip${_formatoCopia === 'linea' ? ' on' : ''}' data-k='linea'>Una línea</button></div></div>
+    <div class='full'><div class='fl'>Texto a copiar</div><textarea id='kTxt' class='inp ktxt' readonly></textarea></div>
+    <div class='full' id='kWarn'></div>`,
+    `<span class='sp'></span><button class='eb eb-g' data-cerrar>Cerrar</button><button class='eb eb-p' id='kOk'>📋 Copiar</button>`, 520);
+  const armar = () => {
+    const c = CONDUCTORES.find(x => x.nombre === $('kCon').value), t = $('kTra').value, s = $('kSem').value;
+    const datos = [];
+    if (c) datos.push(['Conductor', c.nombreCompleto || c.nombre], ['RUT', c.rut || '(sin registrar)'], ['Teléfono', c.telefono || '(sin registrar)']);
+    if (t) datos.push(['Tracto', t]);
+    if (s) datos.push(['Semirremolque', s]);
+    $('kTxt').value = datos.map(d => d[0] + ': ' + d[1]).join(_formatoCopia === 'lineas' ? '\n' : ' / ');
+    $('kTxt').rows = _formatoCopia === 'lineas' ? Math.max(3, datos.length) : 2;
+    const falta = c ? ['nombreCompleto', 'rut', 'telefono'].filter(k => !c[k]) : [];
+    $('kWarn').innerHTML = falta.length ? `<div class='warn'>⚠ A ${esc(c.nombre)} le falta: ${falta.map(k => ({ nombreCompleto: 'nombre completo', rut: 'RUT', telefono: 'teléfono' })[k]).join(', ')}. <a href='#' id='kIr' style='color:#fdba74'>Completar en Maestros</a></div>` : '';
+    if ($('kIr')) $('kIr').onclick = e => { e.preventDefault(); maestros('Conductores', c.nombre); };
+  };
+  ['kCon', 'kTra', 'kSem'].forEach(id => $(id).addEventListener('change', armar));
+  $('kFmt').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; _formatoCopia = b.dataset.k; $('kFmt').querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === b)); armar(); });
+  armar();
+  $('kOk').onclick = async () => {
+    const txt = $('kTxt').value;
+    if (!$('kCon').value && !$('kTra').value && !$('kSem').value) { aviso('Elige al menos un dato', 'err'); return; }
+    let okc = false;
+    try { await navigator.clipboard.writeText(txt); okc = true; } catch (e) { /* se usa el método alternativo */ }
+    if (!okc) { const ta = $('kTxt'); ta.focus(); ta.select(); try { okc = document.execCommand('copy'); } catch (e) { okc = false; } }
+    aviso(okc ? 'Datos copiados: ya puedes pegarlos' : 'No se pudo copiar automáticamente: selecciona el texto y usa Ctrl+C', okc ? 'ok' : 'err');
+  };
 }
 
 /* ============================================================
