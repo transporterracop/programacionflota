@@ -3,7 +3,7 @@
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
-<title>Programacion de Camiones</title>
+<title>Programaci&oacute;n de Camiones</title>
 <style>
 :root{--bg:#0a1628;--panel:#0f2440;--panel2:#12233d;--line:#1f3a5f;--txt:#e8eef7;--muted:#8ba2be;--green:#16a34a;--blue:#2563eb;--orange:#ea580c;--red:#dc2626;--dgreen:#15803d;--gray:#94a3b8;--amber:#b45309}
 *{box-sizing:border-box}
@@ -68,12 +68,107 @@ thead .c1,thead .c2,thead .c3{z-index:7}
 @media(max-width:1200px) and (min-width:821px){ .c1{min-width:118px;width:118px} .c2{left:118px;min-width:92px;width:92px} .c3{left:210px;min-width:92px;width:92px} .day{min-width:140px;width:140px} table{min-width:1150px} }
 @media(max-width:820px){ .wrap{padding:10px 10px 0} .top{gap:10px} .title h1{font-size:16px} .title p{font-size:12px} .brand{padding-right:10px} .brand .bn{font-size:16px} .brand img{max-height:38px;max-width:150px} .kpis{gap:4px} .kpi{min-width:0;padding:4px 6px;gap:5px} .kpi .val{font-size:13px} .kpi .ic{width:15px;height:15px;flex:0 0 15px} .kpi .lbl{font-size:7px} .datebox{padding:8px 10px} .card{padding:5px} .scroll{max-height:calc(100vh - 118px);overflow:auto} table{min-width:0} thead th{font-size:9px;padding:6px 3px;letter-spacing:.4px} thead th .d2{font-size:10px} tbody td{padding:5px 4px} .c1{left:0;min-width:60px;width:60px} .c2{left:60px;min-width:46px;width:46px} .c3{left:106px;min-width:46px;width:46px} .cli{gap:5px} .cli .nm{font-size:10px} .cli .sb{font-size:8.5px} .logo{width:20px;height:20px;flex:0 0 20px;font-size:9px} .logoimg{width:28px;height:20px;flex:0 0 28px} .logoimg img{max-width:28px;max-height:20px} .od{font-size:9.5px;padding-top:10px} .day{min-width:92px;width:92px} .ev .hd{font-size:8.5px;padding:3px 5px;gap:5px} .ev .bd{padding:4px 5px} .ev .li{font-size:9.5px;gap:5px} .bg{font-size:7.5px;padding:2px 4px} .d3{display:none} }
 .ev-off{background:#eef1f5;border:1px solid #e2e7ee;opacity:.6;box-shadow:none;margin-bottom:6px;min-height:71px;display:flex;align-items:center;justify-content:center} .ev-off .bd{padding:9px 8px;width:100%} .ev-off .off-li{justify-content:center;text-align:center;color:#9aa6b4;font-weight:600;font-size:11px;letter-spacing:.6px;text-transform:uppercase} .defw{color:#64748b;font-weight:400} .baliza{margin-left:5px;vertical-align:-3px;opacity:1 !important;color:#ff1500;transform-origin:center;animation:balFlash .6s steps(1,end) infinite, balMove 1.1s ease-in-out infinite} @keyframes balFlash{0%,49%{color:#ff1500;filter:drop-shadow(0 0 3px rgba(255,21,0,.95))}50%,100%{color:#1f6bff;filter:drop-shadow(0 0 3px rgba(31,107,255,.95))}} @keyframes balMove{0%,100%{transform:translateX(-1px) rotate(-7deg)}50%{transform:translateX(1px) rotate(7deg)}} </style>
+<style>
+.estcarga{font-size:11px;color:#8ba2be;margin:0 0 6px;min-height:14px}.estcarga.err{color:#fca5a5}.estcarga.oculto{visibility:hidden}
+.vacio{padding:46px 20px!important;color:#475569;font-size:14px;font-weight:700}.vacio-in{position:sticky;left:20px;width:min(calc(100vw - 100px),760px);text-align:center}.vacio span{display:block;margin-top:6px;font-weight:400;font-size:12px;color:#8593a8}
+.btnr{background:#1e6fa8;color:#fff;border:none;border-radius:7px;padding:8px 16px;font-weight:700;cursor:pointer;font-family:inherit}
+.ev-off .off-li{display:flex}
+</style>
+<style>
+/* ===== Modo edición ===== */
+.btn-editar{display:flex;align-items:center;gap:6px;margin-left:auto;background:#12233d!important;border:1px solid #1f3a5f!important;color:#cfe0f2!important}
+.btn-editar:hover{background:#16a34a!important;border-color:#16a34a!important;color:#fff!important}
+.edbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:linear-gradient(90deg,#14532d,#0f2440);border:1px solid #166534;border-radius:10px;padding:7px 12px;margin:0 0 10px}
+.edbar .pill{display:flex;align-items:center;gap:7px;font-weight:800;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#bbf7d0}
+.edbar .pill i{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.25)}
+.edbar .who{color:#cfe0f2;font-size:12px}
+.sp{flex:1}
+.eb{border:none;border-radius:7px;padding:7px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.eb:disabled{opacity:.55;cursor:wait}
+.eb-p{background:#16a34a;color:#fff}.eb-p:hover{background:#15803d}
+.eb-s{background:#1e6fa8;color:#fff}.eb-r{background:#7f1d1d;color:#fecaca}
+.eb-g{background:#12233d;color:#cfe0f2;border:1px solid #1f3a5f}
+.eb.del{background:transparent;color:#f87171;border:1px solid #7f1d1d}
+.edon #body td.day[data-fila]{cursor:pointer}
+.edon #body td.day[data-fila]:hover .ev{box-shadow:0 0 0 2px #22c55e}
+.edon .ev .pen{position:absolute;right:5px;bottom:5px;width:20px;height:20px;border-radius:5px;background:#0f2440;color:#fff;display:flex;align-items:center;justify-content:center;opacity:.8}
+.edon .ev{position:relative}
+.edon .ev-off{opacity:1!important;border:1.5px dashed #a8b4c3!important;background:#f8fafc!important}
+.edon .ev-off .add{color:#1e6fa8;font-weight:800;font-size:11px;letter-spacing:.5px}
+.c1ed{cursor:pointer;position:relative}.c1ed:hover{background:#f0fdf4!important}
+.pen-c{position:absolute;right:6px;top:6px;width:20px;height:20px;border-radius:5px;background:#0f2440;color:#fff;display:flex;align-items:center;justify-content:center;opacity:.7}
+.addrow td{background:#f8fbff!important}
+.ar{display:inline-flex;align-items:center;gap:8px;color:#1e6fa8;font-weight:800;font-size:12px;border:1.5px dashed #93c5fd;border-radius:8px;padding:8px 14px;background:#eff6ff;cursor:pointer;font-family:inherit;white-space:nowrap}
+/* Ventanas */
+.ovl{position:fixed;inset:0;background:rgba(5,12,24,.62);display:flex;align-items:center;justify-content:center;z-index:50;padding:12px}
+.mdl{width:540px;max-width:100%;max-height:calc(100vh - 24px);display:flex;flex-direction:column;background:#0f2440;border:1px solid #1f3a5f;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.5);color:#e8eef7;overflow:hidden}
+.mh{padding:14px 18px;border-bottom:1px solid #1f3a5f;display:flex;align-items:flex-start;gap:12px}
+.mh h3{margin:0;font-size:15px;font-weight:800;letter-spacing:.3px}
+.mh p{margin:3px 0 0;font-size:12px;color:#8ba2be}
+.mh .x{margin-left:auto;background:none;border:none;color:#8ba2be;font-size:22px;line-height:1;cursor:pointer}
+.mb{padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;overflow:auto}
+.mb .full,.mb .tabs,.mb .sub,.mb .sep{grid-column:1/-1}
+.mf{padding:12px 18px;border-top:1px solid #1f3a5f;display:flex;gap:8px;align-items:center}
+.fl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#8ba2be;margin-bottom:5px}
+.sub{font-size:12px;font-weight:800;color:#cfe0f2;letter-spacing:.4px;text-transform:uppercase;padding-top:2px}
+.sep{border-top:1px solid #1f3a5f}
+.inp{width:100%;background:#12233d;border:1px solid #1f3a5f;border-radius:8px;padding:9px 11px;font-size:13px;color:#e8eef7;font-family:inherit;color-scheme:dark}
+.inp:focus{outline:2px solid #1e6fa8;outline-offset:0}
+.inp:disabled{opacity:.6}
+.inp.big{font-size:22px;letter-spacing:6px;text-align:center}
+.inp.sm{width:auto;padding:6px 9px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:6px 11px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid #1f3a5f;background:#12233d;color:#cfe0f2;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-family:inherit}
+.chip i{width:8px;height:8px;border-radius:50%}
+.chip.on{background:#e8eef7;color:#0f2440;border-color:#e8eef7}
+.chip:disabled{opacity:.4;cursor:default}
+.warn{background:#3b1d0a;border:1px solid #9a3412;color:#fdba74;border-radius:8px;padding:8px 11px;font-size:12px;line-height:1.5}
+.okbox{background:#052e1a;border:1px solid #166534;color:#bbf7d0;border-radius:8px;padding:8px 11px;font-size:12px;line-height:1.5}
+.err{color:#fca5a5;font-size:12px;min-height:16px}
+.rep{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#0a1c33;border:1px solid #1f3a5f;border-radius:8px;padding:8px 11px;font-size:12px}
+.rep label{display:flex;align-items:center;gap:8px;cursor:pointer}
+.rep input[type=checkbox]{width:16px;height:16px;accent-color:#16a34a}
+.hint2{font-size:11px;color:#8ba2be;margin-top:4px}.hint2 a{color:#5aa9f0}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid #1f3a5f;padding-bottom:8px}
+.tab{background:none;border:none;color:#8ba2be;font-weight:700;font-size:12px;padding:6px 10px;border-radius:7px;cursor:pointer;font-family:inherit}
+.tab.on{background:#1e6fa8;color:#fff}
+.tb{width:100%;min-width:0;border-collapse:collapse;font-size:12px}
+.tb th{position:static;background:none;color:#8ba2be;font-size:10px;text-align:left;padding:6px 8px;border-bottom:1px solid #1f3a5f;border-right:none;letter-spacing:.5px}
+.tb td{padding:6px 8px;border-bottom:1px solid #16304f;border-right:none;vertical-align:middle;color:#e8eef7;background:none}
+.tb tr.inact td{opacity:.45}
+.tb .acc{text-align:right;white-space:nowrap}
+.lnk{background:none;border:none;color:#5aa9f0;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;padding:2px 6px}
+.lnk.rojo{color:#f87171}
+.si{color:#4ade80;font-weight:700}.no{color:#f87171;font-weight:700}
+.sw{display:inline-block;width:18px;height:18px;border-radius:5px;border:1px solid #1f3a5f;vertical-align:middle}
+.mini{height:22px;max-width:60px;object-fit:contain;background:#fff;border-radius:4px;padding:1px}
+.mini2{width:22px!important;height:22px!important;font-size:10px!important;display:inline-flex}
+.colrow{display:flex;gap:8px}.colrow input[type=color]{width:42px;height:38px;border:1px solid #1f3a5f;border-radius:8px;background:#12233d;padding:2px;cursor:pointer}
+.logorow{display:flex;gap:14px;align-items:center}
+.lprev{width:130px;height:66px;flex:0 0 130px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.lprev img{max-width:120px;max-height:58px;object-fit:contain}.lprev span{color:#94a3b8;font-size:11px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:80;padding:10px 18px;border-radius:10px;font-weight:700;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.4);transition:opacity .3s;max-width:92vw}
+.toast.ok{background:#16a34a;color:#fff}.toast.err{background:#b91c1c;color:#fff}
+@media(max-width:820px){
+ .ovl{padding:0;align-items:flex-end}
+ .mdl{width:100%!important;max-height:92vh;border-radius:16px 16px 0 0}
+ .mb{grid-template-columns:1fr}
+ .edbar .eb{padding:7px 9px}
+ .btn-editar{margin-left:0}
+ .logorow{flex-direction:column;align-items:flex-start}
+}
+.tb tr:hover td{background:#16304f!important}
+.edon .ev .bd{padding-right:20px}
+.edon .ev .pen{width:16px!important;height:16px!important;right:4px!important;bottom:4px!important}
+.edon .ev .pen svg{width:10px;height:10px}
+</style>
+<style id='dynCss'></style>
 </head>
 <body>
 <div class='wrap'>
   <div class='top'>
     <div class='brand' id='brand'></div><div class='title'>
-      <h1>Programaci&oacute;n de Camiones</h1>
+      <h1 id='titulo'>Programaci&oacute;n de Camiones</h1>
 
     </div>
     <div class='kpis' id='kpis'></div>
@@ -82,6 +177,7 @@ thead .c1,thead .c2,thead .c3{z-index:7}
       <div class='u'>&Uacute;ltima actualizaci&oacute;n: <b id='upd'></b></div>
     </div>
     </div>  <div class='filters'><div class='fg'><label>Desde</label><input type='date' id='fDesde'></div><div class='fg'><label>Hasta</label><input type='date' id='fHasta'></div><div class='fg'><label>Cliente</label><select id='fCli'></select></div><div class='fg'><label>Conductor</label><select id='fCon'></select></div><div class='fg'><label>Tracto</label><select id='fTracto'></select></div><div class='fg'><label>Semirremolque</label><select id='fSemi'></select></div><button id='fClr'>Limpiar</button></div>
+  <div id='estadoCarga' class='estcarga'>Cargando…</div>
   <div class='card'>
     <div class='scroll'>
       <table>
@@ -93,80 +189,696 @@ thead .c1,thead .c2,thead .c3{z-index:7}
 
 </div>
 <script>
-const LOGOD = ''; /* logo eliminado: el encabezado muestra solo el nombre de la empresa */
-const RANGO = '31 ago - 4 oct 2026';
-const UPD   = '29-sept-2026'; const EMP = ''; const EMPSUB = ''; const LOGOF = 'logo.png';
-const NDIAS = 35; const FLOTA=['TYLS-95','VFRD-69','VFRD-68','VGBS-25','VGHG-21','VGGV-38','RKFZ-49','RKFZ-50','LPKL-45','GHCC-98']; const DISP=[3,3,3,5,6,6,6,5,5,0,0,-1,0,0,0,0,1,2,3,3,2,1,2,0,-1,0,1,2,2,2,2]; const FS=[4,4,4,3,3,3,3,3,4,3,3,3,3,4,5,4,3,3,3,3,3,3,3,3,4,3,3,3,3,3,3]; const FSPAT=['GHCC-98, RKFZ-49, VFRD-69, RKFZ-50','GHCC-98, RKFZ-49, VFRD-69, RKFZ-50','GHCC-98, RKFZ-49, RKFZ-50, VFRD-69','GHCC-98, RKFZ-49, RKFZ-50','GHCC-98, RKFZ-49, RKFZ-50','GHCC-98, RKFZ-49, RKFZ-50','GHCC-98, RKFZ-49, RKFZ-50','GHCC-98, RKFZ-49, RKFZ-50','GHCC-98, RKFZ-49, RKFZ-50, VFRD-69','GHCC-98, RKFZ-49, RKFZ-50','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98, LPKL-45','RKFZ-49, RKFZ-50, GHCC-98, TYLS-95, LPKL-45','RKFZ-49, RKFZ-50, GHCC-98, TYLS-95','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98, TYLS-95','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98','RKFZ-49, RKFZ-50, GHCC-98']; const DISPPAT=['TYLS-95, VGHG-21, LPKL-45','TYLS-95, VFRD-68, VGGV-38','TYLS-95, VFRD-68, VGGV-38','TYLS-95, VFRD-69, VFRD-68, VGBS-25, VGGV-38','TYLS-95, VFRD-69, VFRD-68, VGBS-25, VGHG-21, VGGV-38','TYLS-95, VFRD-69, VFRD-68, VGHG-21, VGGV-38, LPKL-45','TYLS-95, VFRD-69, VFRD-68, VGHG-21, VGGV-38, LPKL-45','TYLS-95, VFRD-69, VFRD-68, VGGV-38, LPKL-45','TYLS-95, VFRD-68, VGBS-25, VGGV-38, LPKL-45','','','','','','','','TYLS-95','TYLS-95, VGGV-38','TYLS-95, VGGV-38, LPKL-45','TYLS-95, VGGV-38, LPKL-45','TYLS-95, LPKL-45','LPKL-45','VFRD-69, LPKL-45','','','','TYLS-95','TYLS-95, VFRD-69','TYLS-95, VFRD-69','TYLS-95, VFRD-69','VGBS-25, VGGV-38'];
-const DIAS = [['Lunes','31-ago'],['Martes','01-sept'],['Mi&eacute;rcoles','02-sept'],['Jueves','03-sept'],['Viernes','04-sept'],['S&aacute;bado','05-sept'],['Domingo','06-sept'],['Lunes','07-sept'],['Martes','08-sept'],['Mi&eacute;rcoles','09-sept'],['Jueves','10-sept'],['Viernes','11-sept'],['S&aacute;bado','12-sept'],['Domingo','13-sept'],['Lunes','14-sept'],['Martes','15-sept'],['Mi&eacute;rcoles','16-sept'],['Jueves','17-sept'],['Viernes','18-sept'],['S&aacute;bado','19-sept'],['Domingo','20-sept'],['Lunes','21-sept'],['Martes','22-sept'],['Mi&eacute;rcoles','23-sept'],['Jueves','24-sept'],['Viernes','25-sept'],['S&aacute;bado','26-sept'],['Domingo','27-sept'],['Lunes','28-sept'],['Martes','29-sept'],['Mi&eacute;rcoles','30-sept'],['Jueves','01-oct'],['Viernes','02-oct'],['S&aacute;bado','03-oct'],['Domingo','04-oct'],];
-function S(c,t,r,e){ const p = String(e).split(' '); return {c:c||'-', t:t||'-', r:r||'-', e:p[0], g:p.slice(1).join(' ')}; }  function TAG(g){ const s = String(g||'').toUpperCase(); if (s.indexOf('EXC') === 0) return ['EXCLUSIVO','b-exc','x-exc']; if (s.indexOf('RET') === 0) return ['RETORNO','b-ret','x-ret']; if (s === '') return ['','','']; return [s,'b-otro','x-otro']; }
-function F(cli,sub,o,d,m){ const a=new Array(NDIAS).fill(null); for(const k in m) a[k]=m[k]; return {cliente:cli,sub:sub,origen:o,destino:d,cells:a}; }
-const _FILAS_RAW = [
-F('DHL','','Copiapo','Salares Norte',{0:[S('R.SOBARZO','VGBS-25','PXHX-41','DESCARGA EXC')],1:[S('R.SOBARZO','VGBS-25','PXHX-41','CARGA EXC')],2:[S('R.SOBARZO','VGBS-25','PXHX-41','DESCARGA EXC')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('C.GALLARDO','VGBS-25','PXHX-41','CARGA EXC')],6:[S('C.GALLARDO','VGBS-25','PXHX-41','DESCARGA EXC')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('J.FERRER','LPKL-45','GRDY-27','CARGA EXC')],12:[S('J.FERRER','LPKL-45','GRDY-27','DESCARGA EXC')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('C.GALLARDO','TYLS-95','PXGV-67','CARGA EXC')],26:[S('D.BENAVENTE','LPKL-45','PXGV-67','DESCARGA EXC')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('S/M','','','S/M')],30:[S('G.VALLADARES','VFRD-68','GRCK-71','CARGA RET')],31:[S('DEFINIR','VFRD-68','GRCK-71','CARGA RET')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('DHL','','Copiapo','La Coipa',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('C.GALLARDO','VGBS-25','PXHX-41','CARGA RET')],7:[S('C.GALLARDO','VGBS-25','PXHX-41','DESCARGA RET')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('R.SOBARZO','RKFZ-50','KYPW-64','CARGA EXC')],12:[S('S/M','','','S/M')],13:[S('J.FERRER','VGGV-38','KYPW-64','TRANSITO EXC')],14:[S('J.FERRER','VGGV-38','KYPW-64','DESCARGA EXC')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('C.GALLARDO','TYLS-95','PXHX-42','CARGA EXC')],26:[S('S/M','','','S/M')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('G.VALLADARES','VFRD-68','GRCK-71','CARGA EXC')],30:[S('G.VALLADARES','VFRD-68','GRCK-71','DESCARGA EXC')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('MKL','','Copiapo','La Coipa',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('S/M','','','S/M')],26:[S('S/M','','','S/M')],27:[S('S/M','','','S/M')],28:[S('DEFINIR','DEFINIR','DEFINIR','CARGA EXC')],29:[S('S/M','','','S/M')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('MKL','','Salares Norte','Copiapo',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('G.VALLADARES','VFRD-68','GRCK-71','TRANSITO EXC')],21:[S('G.VALLADARES','VFRD-68','GRCK-71','CARGA EXC')],22:[S('G.VALLADARES','VFRD-68','GRCK-71','DESCARGA EXC')],23:[S('C.GALLARDO','LPKL-45','PXGV-67','CARGA EXC')],24:[S('C.GALLARDO','TYLS-95','PXGV-67','DESCARGA EXC')],25:[S('S/M','','','S/M')],26:[S('S/M','','','S/M')],27:[S('J.FERRER','VGGV-38','PXHX-44','CARGA EXC')],28:[S('J.FERRER','VGGV-38','PXHX-44','SOBRESTADIA EXC')],29:[S('J.FERRER','VGGV-38','PXHX-44','DESCARGA EXC')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('SAN RAFAEL','','Copiapo','Q. Blanca',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('C.DIAZ','VFRD-68','PXHX-43','TRANSITO EXC')],10:[S('C.DIAZ','VFRD-68','PXHX-43','TRANSITO EXC')],11:[S('C.DIAZ','VFRD-68','PXHX-43','CARGA EXC')],12:[S('C.DIAZ','VFRD-68','PXHX-43','TRANSITO EXC')],13:[S('C.DIAZ','VFRD-68','PXHX-43','DESCARGA EXC')],14:[S('C.DIAZ','VFRD-68','PXHX-43','TRANSITO EXC')],15:[S('C.DIAZ','VFRD-68','PXHX-43','SOBRESTADIA EXC')],16:[S('C.DIAZ','VFRD-68','PXHX-43','CARGA EXC')],17:[S('C.DIAZ','VFRD-68','PXHX-43','TRANSITO EXC')],18:[S('DEFINIR','VFRD-68','PXHX-43','TRANSITO EXC')],19:[S('DEFINIR','VFRD-68','PXHX-43','SOBRESTADIA EXC')],20:[S('DEFINIR','VFRD-68','PXHX-43','SOBRESTADIA EXC')],21:[S('DEFINIR','VFRD-68','PXHX-43','DESCARGA EXC')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('S/M','','','S/M')],26:[S('S/M','','','S/M')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('S/M','','','S/M')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('SAN RAFAEL','','Copiapo','Q. Blanca',{0:[S('J.FERRER','VGGV-38','PXHX-43','TRANSITO EXC')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('C.CARVAJAL','VGGV-38','PXHX-44','TRANSITO EXC')],10:[S('C.CARVAJAL','VGGV-38','PXHX-44','TRANSITO EXC')],11:[S('C.CARVAJAL','VGGV-38','PXHX-44','CARGA EXC')],12:[S('C.CARVAJAL','VGGV-38','PXHX-44','TRANSITO EXC')],13:[S('C.CARVAJAL','VGGV-38','PXHX-44','DESCARGA EXC')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('J.FERRER','VGGV-38','PXHX-44','TRANSITO EXC')],21:[S('J.FERRER','VGGV-38','PXHX-44','TRANSITO EXC')],22:[S('J.FERRER','VGGV-38','PXHX-44','TRANSITO EXC')],23:[S('J.FERRER','VGGV-38','PXHX-44','TRANSITO EXC')],24:[S('J.FERRER','VGGV-38','PXHX-44','CARGA EXC')],25:[S('J.FERRER','VGGV-38','PXHX-44','TRANSITO EXC')],26:[S('J.FERRER','VGGV-38','PXHX-44','DESCARGA EXC')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('S/M','','','S/M')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('SAN RAFAEL','','Copiapo','Q. Blanca',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('C.GALLARDO','VGBS-25','PXHX-41','TRANSITO EXC')],10:[S('C.GALLARDO','VGBS-25','PXHX-41','TRANSITO EXC')],11:[S('C.GALLARDO','VGBS-25','PXHX-41','CARGA EXC')],12:[S('C.GALLARDO','VGBS-25','PXHX-41','TRANSITO EXC')],13:[S('C.GALLARDO','VGBS-25','PXHX-41','DESCARGA EXC')],14:[S('C.GALLARDO','VGBS-25','PXHX-41','TRANSITO EXC')],15:[S('C.GALLARDO','VGBS-25','PXHX-41','SOBRESTADIA EXC')],16:[S('C.GALLARDO','VGBS-25','PXHX-41','CARGA EXC')],17:[S('C.GALLARDO','VGBS-25','PXHX-41','TRANSITO EXC')],18:[S('C.GALLARDO','VGBS-25','PXHX-41','TRANSITO EXC')],19:[S('E.GALVEZ','VGBS-25','PXHX-41','SOBRESTADIA EXC')],20:[S('E.GALVEZ','VGBS-25','PXHX-41','SOBRESTADIA EXC')],21:[S('E.GALVEZ','VGBS-25','PXHX-41','DESCARGA EXC')],22:[S('E.GALVEZ','VGBS-25','PXHX-41','TRANSITO EXC')],23:[S('E.GALVEZ','VGBS-25','PXHX-41','TRANSITO EXC')],24:[S('E.GALVEZ','VGBS-25','PXHX-41','CARGA EXC')],25:[S('E.GALVEZ','VGBS-25','PXHX-41','TRANSITO EXC')],26:[S('E.GALVEZ','VGBS-25','PXHX-41','DESCARGA EXC')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('S/M','','','S/M')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('SAN RAFAEL','','Copiapo','Q. Blanca',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('C.RIOS','VFRD-69','PXHX-42','TRANSITO EXC')],10:[S('C.RIOS','VFRD-69','PXHX-42','TRANSITO EXC')],11:[S('C.RIOS','VFRD-69','PXHX-42','CARGA EXC')],12:[S('C.RIOS','VFRD-69','PXHX-42','TRANSITO EXC')],13:[S('C.RIOS','VFRD-69','PXHX-42','DESCARGA EXC')],14:[S('C.RIOS','VFRD-69','PXHX-42','TRANSITO EXC')],15:[S('C.RIOS','VFRD-69','PXHX-42','SOBRESTADIA EXC')],16:[S('C.RIOS','VFRD-69','PXHX-42','CARGA EXC')],17:[S('C.RIOS','VFRD-69','PXHX-42','TRANSITO EXC')],18:[S('C.RIOS','VFRD-69','PXHX-42','DESCARGA EXC')],19:[S('DEFINIR','VFRD-69','PXHX-42','SOBRESTADIA EXC')],20:[S('DEFINIR','VFRD-69','PXHX-42','SOBRESTADIA EXC')],21:[S('DEFINIR','VFRD-69','PXHX-42','DESCARGA EXC')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('S/M','','','S/M')],26:[S('S/M','','','S/M')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('S/M','','','S/M')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('SAN RAFAEL','','Copiapo','Q. Blanca',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('J.ANES','VGHG-21','PXHX-45','TRANSITO EXC')],10:[S('J.ANES','VGHG-21','PXHX-45','TRANSITO EXC')],11:[S('J.ANES','VGHG-21','PXHX-45','CARGA EXC')],12:[S('J.ANES','VGHG-21','PXHX-45','TRANSITO EXC')],13:[S('J.ANES','VGHG-21','PXHX-45','DESCARGA EXC')],14:[S('J.ANES','VGHG-21','PXHX-45','TRANSITO EXC')],15:[S('J.ANES','VGHG-21','PXHX-45','SOBRESTADIA EXC')],16:[S('J.ANES','VGHG-21','PXHX-45','CARGA EXC')],17:[S('J.ANES','VGHG-21','PXHX-45','TRANSITO EXC')],18:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','SOBRESTADIA EXC')],19:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','SOBRESTADIA EXC')],20:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','SOBRESTADIA EXC')],21:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','DESCARGA EXC')],22:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','TRANSITO EXC')],23:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','TRANSITO EXC')],24:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','CARGA EXC')],25:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','TRANSITO EXC')],26:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','DESCARGA EXC')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('S/M','','','S/M')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('SAN RAFAEL','','Copiapo','Q. Blanca',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('D.BENAVENTE','TYLS-95','PXGV-66','TRANSITO EXC')],10:[S('D.BENAVENTE','TYLS-95','PXGV-66','TRANSITO EXC')],11:[S('D.BENAVENTE','TYLS-95','PXGV-66','CARGA EXC')],12:[S('D.BENAVENTE','TYLS-95','PXGV-66','TRANSITO EXC')],13:[S('D.BENAVENTE','TYLS-95','PXGV-66','DESCARGA EXC')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('D.BENAVENTE','TYLS-95','PXHX-42','DESCARGA EXC')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('S/M','','','S/M')],26:[S('S/M','','','S/M')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('S/M','','','S/M')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('CASIA','','La Negra','Salares Norte',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('S/M','','','S/M')],23:[S('G.VALLADARES','VFRD-68','GRDY-27','TRANSITO EXC')],24:[S('G.VALLADARES','VFRD-68','GRDY-27','CARGA EXC')],25:[S('G.VALLADARES','VFRD-68','GRDY-27','TRANSITO')],26:[S('G.VALLADARES','VFRD-68','GRDY-27','DESCARGA EXC')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('S/M','','','S/M')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('TECNO FAST','','Copiap&oacute;','Salares Norte',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('D.BENAVENTE','LPKL-45','KYPW-64','TRANSITO')],25:[S('D.BENAVENTE','LPKL-45','KYPW-64','CARGA EXC')],26:[S('D.BENAVENTE','LPKL-45','KYPW-64','SOBRESTADIA EXC')],27:[S('D.BENAVENTE','LPKL-45','KYPW-64','SOBRESTADIA EXC')],28:[S('D.BENAVENTE','LPKL-45','PXGV-67','SOBRESTADIA EXC')],29:[S('D.BENAVENTE','LPKL-45','PXGV-67','DESCARGA EXC')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('TECNO FAST','','Copiap&oacute;','Salares Norte',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('G.VALLADARES','VFRD-68','GRDY-27','TRANSITO RET')],26:[S('G.VALLADARES','VFRD-68','GRDY-27','CARGA RET')],27:[S('G.VALLADARES','VFRD-68','GRDY-27','TRANSITO RET')],28:[S('G.VALLADARES','VFRD-68','GRDY-27','SOBRESTADIA RET')],29:[S('G.VALLADARES','VFRD-68','GRDY-27','DESCARGA EXC')],30:[S('C.DIAZ','TYLS-95','DEFINIR','CARGA EXC')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('TECNO FAST','','Copiap&oacute;','Salares Norte',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('S/M','','','S/M')],26:[S('J.FERRER','VGGV-38','PXHX-44','TRANSITO EXC')],27:[S('J.FERRER','VGGV-38','PXHX-44','CARGA EXC')],28:[S('J.FERRER','VGGV-38','PXHX-44','SOBRESTADIA')],29:[S('J.FERRER','VGGV-38','PXHX-44','DESCARGA EXC')],30:[S('J.FERRER','VFRD-68','PXHX-44','CARGA EXC')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('TECNO FAST','','Copiap&oacute;','Salares Norte',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('S/M','','','S/M')],26:[S('E.GALVEZ','VGBS-25','PXHX-41','TRANSITO EXC')],27:[S('E.GALVEZ','VGBS-25','PXHX-41','CARGA EXC')],28:[S('E.GALVEZ','VGBS-25','PXHX-41','SOBRESTADIA')],29:[S('E.GALVEZ','VGBS-25','PXHX-41','DESCARGA EXC')],30:[S('E.GALVEZ','VFRD-69','PXHX-43','CARGA EXC')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('TECNO FAST','','Copiap&oacute;','Salares Norte',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('S/M','','','S/M')],26:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','TRANSITO EXC')],27:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','CARGA EXC')],28:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','SOBRESTADIA')],29:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','DESCARGA EXC')],30:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','CARGA EXC')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('TERRACOP','','Fenix Gold','Santiago',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('D.BENAVENTE','LPKL-45','GRDY-27','DESCARGA EXC')],10:[S('E.GALVEZ','LPKL-45','GRDY-27','DESCARGA EXC')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('R.SOBARZO','VGGV-38','KYLP-74','CARGA EXC')],16:[S('R.SOBARZO','VGGV-38','KYLP-74','CARGA EXC')],17:[S('G.VALLADARES','LPKL-45','GRCK-71','CARGA EXC')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('J.ANES','VFRD-69','KYLP-74','CARGA EXC')],22:[S('D.BENAVENTE','TYLS-95','PXHX-42','CARGA EXC')],23:[S('G.VALLADARES','VFRD-68','PXHX-42','DESCARGA EXC')],24:[S('S/M','','','S/M')],25:[S('S/M','','','S/M')],26:[S('S/M','','','S/M')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('J.ANES','VGBS-25','KYLP-74','CARGA EXC')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('TERRACOP','','Fenix Gold','Santiago',{0:[S('G.VALLADARES','VFRD-68','KYLP-74','CARGA EXC')],1:[S('G.QUILAQUIR','VGHG-21','KYLP-74','DESCARGA EXC')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('R.SOBARZO','LPKL-45','KYLP-74','CARGA EXC')],11:[S('R.SOBARZO','LPKL-45','KYLP-74','DESCARGA EXC')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('J.ANES','VFRD-69','KYLP-74','CARGA EXC')],22:[S('G.VALLADARES','VFRD-68','KYLP-74','CARGA EXC')],23:[S('S/M','','','S/M')],24:[S('J.ANES','VFRD-69','KYLP-74','CARGA EXC')],25:[S('J.ANES','VFRD-69','KYLP-74','CARGA EXC')],26:[S('J.ANES','VFRD-69','KYLP-74','CARGA EXC')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('J.ANES','VGBS-25','KYLP-74','CARGA EXC')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('TERRACOP','','Copiapo','Santiago',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('S/M','','','S/M')],26:[S('S/M','','','S/M')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('D.BENAVENTE','LPKL-45','DEFINIR','TRANSITO EXC')],30:[S('D.BENAVENTE','LPKL-45','DEFINIR','CARGA EXC')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('TECNO FAST','','Copiapo','Chimberos',{0:[S('S/M','','','S/M')],1:[S('E.GALVEZ','LPKL-45','KYPW-64','CARGA EXC')],2:[S('E.GALVEZ','LPKL-45','KYPW-64','DESCARGA EXC')],3:[S('E.GALVEZ','LPKL-45','KYPW-64','CARGA EXC')],4:[S('E.GALVEZ','LPKL-45','KYPW-64','DESCARGA EXC')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('G.A&Ntilde;ASCO','VGHG-21','KYPW-64','CARGA EXC')],23:[S('D.BENAVENTE','TYLS-95','KYPW-64','DESCARGA EXC')],24:[S('D.BENAVENTE','LPKL-45','KYPW-64','TRANSITO')],25:[S('S/M','','','S/M')],26:[S('S/M','','','S/M')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('S/M','','','S/M')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('TECNO FAST','','Copiapo','Chimberos',{0:[S('S/M','','','S/M')],1:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','CARGA EXC')],2:[S('G.A&Ntilde;ASCO','VGHG-21','PXHX-45','DESCARGA EXC')],3:[S('J.ANES','VGHG-21','PXHX-45','CARGA EXC')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('S/M','','','S/M')],8:[S('S/M','','','S/M')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('S/M','','','S/M')],16:[S('S/M','','','S/M')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('G.QUILAQUIR','STCH-76','STCH-76','ESCOLTA')],22:[S('E.GALVEZ','VGBS-25','PXHX-43','CARGA EXC')],23:[S('J.ANES','VFRD-69','PXHX-43','DESCARGA EXC')],24:[S('S/M','','','S/M')],25:[S('S/M','','','S/M')],26:[S('S/M','','','S/M')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('S/M','','','S/M')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
-F('SALFA RENT','','Copiapo','Antofagasta',{0:[S('S/M','','','S/M')],1:[S('S/M','','','S/M')],2:[S('S/M','','','S/M')],3:[S('S/M','','','S/M')],4:[S('S/M','','','S/M')],5:[S('S/M','','','S/M')],6:[S('S/M','','','S/M')],7:[S('J.ANES','VGHG-21','GRCK-71','CARGA EXC')],8:[S('J.ANES','VGHG-21','GRCK-71','DESCARGA EXC')],9:[S('S/M','','','S/M')],10:[S('S/M','','','S/M')],11:[S('S/M','','','S/M')],12:[S('S/M','','','S/M')],13:[S('S/M','','','S/M')],14:[S('S/M','','','S/M')],15:[S('C.CARVAJAL','LPKL-45','GRCK-71','CARGA EXC')],16:[S('C.CARVAJAL','LPKL-45','GRCK-71','DESCARGA EXC')],17:[S('S/M','','','S/M')],18:[S('S/M','','','S/M')],19:[S('S/M','','','S/M')],20:[S('S/M','','','S/M')],21:[S('S/M','','','S/M')],22:[S('S/M','','','S/M')],23:[S('S/M','','','S/M')],24:[S('S/M','','','S/M')],25:[S('S/M','','','S/M')],26:[S('S/M','','','S/M')],27:[S('S/M','','','S/M')],28:[S('S/M','','','S/M')],29:[S('S/M','','','S/M')],30:[S('S/M','','','S/M')],31:[S('S/M','','','S/M')],32:[S('S/M','','','S/M')],33:[S('S/M','','','S/M')],34:[S('S/M','','','S/M')],}),
+/* ============================================================
+   PROGRAMACIÓN DE CAMIONES — TERRACOP
+   Etapa 2: la página lee la programación desde la API (Google Sheets + Apps Script).
+   ============================================================ */
+const API_URL = 'https://script.google.com/macros/s/AKfycbz7xf-KSnQD67QrjXjOlhVb4Qx_sQcu0AQ2POlLQeKyyEReBFF4q2JFz1Y75oDtjZi8/exec';
+const REFRESCO_MS = 5 * 60 * 1000;          // recarga automática cada 5 minutos
+const CACHE_KEY = 'tc_prog_cache_v1';
 
+const DIAS_SEM = ['Domingo', 'Lunes', 'Martes', 'Mi&eacute;rcoles', 'Jueves', 'Viernes', 'S&aacute;bado'];
+const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct', 'nov', 'dic'];
+const KPI_DEF = [
+  ['CARGA', 'En carga', '#16a34a'], ['TRANSITO', 'En tránsito', '#2563eb'],
+  ['DESCARGA', 'En descarga', '#ea580c'], ['INTERNOS', 'Mov. internos', '#4ade80']];
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-]; const FILAS = _FILAS_RAW.filter(f => String(f.cliente).toUpperCase() !== 'F/S');
-/* ===== FIN DATOS ===== */ const _MES={ene:0,feb:1,mar:2,abr:3,may:4,jun:5,jul:6,ago:7,sep:8,oct:9,nov:10,dic:11}; function _pd(s){const p=String(s).replace(/&[^;]+;/g,'').trim().split('-');return {d:parseInt(p[0],10),m:_MES[(p[1]||'').toLowerCase().slice(0,3)]};} const _YR=parseInt((RANGO.match(/(\d{4})/)||[])[1],10)||new Date().getFullYear(); const _HOY=new Date();_HOY.setHours(0,0,0,0); function fechaDia(i){if(!DIAS[i])return null;const o=_pd(DIAS[i][1]);if(o.m==null)return null;return new Date(_YR,o.m,o.d);} function estadoDia(i){const dd=fechaDia(i);if(!dd)return 'programado';const t=dd.getTime(),h=_HOY.getTime();if(t<h)return 'realizado';if(t===h)return 'ejecucion';return 'programado';} const SVG_ST={realizado:`<svg viewBox='0 0 24 24' width='12' height='12' fill='currentColor'><path d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1.2 14.2-4-4 1.4-1.4 2.6 2.6 5.6-5.6 1.4 1.4-7 7Z'/></svg>`,ejecucion:`<svg viewBox='0 0 24 24' width='12' height='12' fill='currentColor'><path d='M8 5v14l11-7L8 5Z'/></svg>`,programado:`<svg viewBox='0 0 24 24' width='12' height='12' fill='currentColor'><path d='M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7Zm12 8v9H5v-9h14Z'/></svg>`,proyectado:`<svg viewBox='0 0 24 24' width='12' height='12' fill='currentColor'><path d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm.9 5h-1.8v6l4.7 2.8.9-1.5-3.8-2.3V7Z'/></svg>`}; const LBL_ST={realizado:'Realizado',ejecucion:'En ejecuci&oacute;n',programado:'Programado',proyectado:'Proyectado'};
-const SVG_USER  = `<svg viewBox='0 0 24 24' width='13' height='13' fill='currentColor'><path d='M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z'/></svg>`;
+const SVG_ST = {
+  realizado: `<svg viewBox='0 0 24 24' width='12' height='12' fill='currentColor'><path d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-1.2 14.2-4-4 1.4-1.4 2.6 2.6 5.6-5.6 1.4 1.4-7 7Z'/></svg>`,
+  ejecucion: `<svg viewBox='0 0 24 24' width='12' height='12' fill='currentColor'><path d='M8 5v14l11-7L8 5Z'/></svg>`,
+  programado: `<svg viewBox='0 0 24 24' width='12' height='12' fill='currentColor'><path d='M7 2v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7Zm12 8v9H5v-9h14Z'/></svg>`};
+const LBL_ST = { realizado: 'Realizado', ejecucion: 'En ejecuci&oacute;n', programado: 'Programado' };
+const SVG_USER = `<svg viewBox='0 0 24 24' width='13' height='13' fill='currentColor'><path d='M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z'/></svg>`;
 const SVG_TRUCK = `<svg viewBox='0 0 24 24' width='13' height='13' fill='currentColor'><path d='M2 6h11v9H2V6Zm12 3h4l3 4v3h-7V9ZM6.5 20a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Zm11 0a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z'/></svg>`;
-const SVG_TRAIL = `<svg viewBox='0 0 24 24' width='13' height='13' fill='currentColor'><path d='M3 8h16v7H3V8Zm-1 8h20v1.6H2V16Zm5.5 4.4a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4Zm8 0a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4Z'/></svg>`;
-function kTruck(col){ return `<svg viewBox='0 0 24 24' fill='${col}'><path d='M2 6h11v9H2V6Zm12 3h4l3 4v3h-7V9ZM6.5 20a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Zm11 0a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z'/></svg>`; }
+const kTruck = col => `<svg viewBox='0 0 24 24' fill='${col}'><path d='M2 6h11v9H2V6Zm12 3h4l3 4v3h-7V9ZM6.5 20a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Zm11 0a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z'/></svg>`;
 const K_INT = `<svg viewBox='0 0 24 24' fill='#15803d'><path d='M12 3 3 8v8l9 5 9-5V8l-9-5Zm0 2.3 6.5 3.6L12 12.5 5.5 8.9 12 5.3Z'/></svg>`;
-const LOGO = { 'AGGREKO':['#f59e0b','#fff'], 'TERRACOP':['#1e6fa8','#fff'], 'DHL':['#facc15','#7c2d12'], 'GARDE CORPS':['#64748b','#fff'], 'GARDE COPRS':['#64748b','#fff'], 'SEMINET':['#0ea5e9','#fff'], 'RESITER':['#16a34a','#fff'], 'SAN RAFAEL':['#dc2626','#fff'], 'Ecominera':['#dc2626','#fff'], 'CKF':['#dc2626','#fff'], 'JPL':['#dc2626','#fff'], 'INELMETAL':['#dc2626','#fff'], 'SALFA RENT':['#dc2626','#fff'], 'TECNO FAST':['#dc2626','#fff'], 'MKL':['#dc2626','#fff'], 'CASIA':['#dc2626','#fff'] }; const LOGOIMG = { 'AGGREKO':'AGGREKO.png', 'TERRACOP':'TERRACOP.png', 'DHL':'DHL.png', 'GARDE CORPS':'GARDE CORPS.png', 'GARDE COPRS':'GARDE CORPS.png', 'SEMINET':'SEMINET.png', 'RESITER':'RESITER.png', 'SAN RAFAEL':'SAN RAFAEL.png', 'Ecominera':'Ecominera.jpg', 'CKF':'CKF.png', 'JPL':'JPL.png', 'INELMETAL':'INELMETAL.png', 'SALFA RENT':'SALFARENT.png', 'TECNO FAST':'TECNOFAST.png', 'MKL':'MKL.png', 'CASIA':'CASIA.png' }; function logoFail(im){ const d=document.createElement('div'); d.className='logo'; d.style.background=im.dataset.bg; d.style.color=im.dataset.fg; d.textContent=im.dataset.ini; const p=im.parentNode; p.parentNode.replaceChild(d,p); }
-const cls = e => 's-' + String(e||'').replace(/[^A-Z]/g,''); const BEACON = `<svg class='baliza' viewBox='0 0 24 24' width='14' height='14' fill='currentColor'><path d='M11 3.5a1 1 0 0 1 2 0V5a5 5 0 0 1 4 4.9V13H7V9.9A5 5 0 0 1 11 5V3.5Z'/><rect x='5' y='13' width='14' height='2.6' rx='1'/><rect x='11' y='15.6' width='2' height='3.4'/><path d='M3.6 8.4 5 9M20.4 8.4 19 9M2.8 12h1.6M19.6 12h1.6' fill='none' stroke='currentColor' stroke-width='1.4' stroke-linecap='round'/></svg>`; function defw(txt){ const s=String(txt); if(s.toUpperCase().indexOf('DEFINIR')===-1) return s; return s.replace(/DEFINIR/gi, "<span class='defw'>DEFINIR"+BEACON+"</span>"); }
-const all = FILAS.flatMap(f => f.cells.filter(Boolean)).flat(); let _hoyI=-1; for(let i=0;i<NDIAS;i++){if(estadoDia(i)==='ejecucion'){_hoyI=i;break;}} const dispDia=i=>(typeof DISP!=='undefined'&&DISP[i]!=null)?DISP[i]:0; const fsDia=i=>(typeof FS!=='undefined'&&FS[i]!=null)?FS[i]:0;
-const cnt = e => all.filter(x => x.e === e).length; const cntDia = (e,i) => (i<0 ? 0 : FILAS.flatMap(f => f.cells[i] || []).filter(Boolean).filter(x => x.e === e).length);
-const kpis = [['En carga', (_hoyI>=0?cntDia('CARGA',_hoyI):'&mdash;'), '#16a34a', kTruck('#16a34a')],['En tránsito', (_hoyI>=0?cntDia('TRANSITO',_hoyI):'&mdash;'), '#2563eb', kTruck('#2563eb')],['En descarga', (_hoyI>=0?cntDia('DESCARGA',_hoyI):'&mdash;'), '#ea580c', kTruck('#ea580c')],['Mov. internos', (_hoyI>=0?cntDia('M.INTERNOS',_hoyI):'&mdash;'), '#4ade80', K_INT],['Tractos disp. hoy', (_hoyI>=0?dispDia(_hoyI):'&mdash;'), '#0ea5e9', kTruck('#0ea5e9')],['Fuera de servicio', (_hoyI>=0?fsDia(_hoyI):'&mdash;'), '#dc2626', kTruck('#dc2626')]];
-document.getElementById('kpis').innerHTML = kpis.map(k => `<div class='kpi'><div class='ic'>${k[3]}</div><div><div class='lbl'>${k[0]}</div><div class='val' style='color:${k[2]}'>${k[1]}</div></div></div>`).join(''); const _b = document.getElementById('brand'); if (_b) { _b.innerHTML = `<img src='Logos/TERRACOP.PNG' alt='TERRACOP' onerror="this.onerror=null;this.src='Logos/TERRACOP.png'">` + (EMP ? `<div><div class='bn'>${EMP}</div><div class='bs'>${EMPSUB}</div></div>` : ''); }
-document.getElementById('rango').innerHTML = RANGO;
-document.getElementById('upd').innerHTML = UPD;
-document.getElementById('hrow').innerHTML = `<th class='c1'>Cliente</th><th class='c2'>Origen</th><th class='c3'>Destino</th>` + DIAS.map((d,i) => `<th class='day' data-idx='${i}'>${d[0]}<span class='d2'>${d[1]}</span><span class='d3' style='display:block;font-size:9px;font-weight:700;color:#0ea5e9;margin-top:2px'>${dispDia(i)} disp.</span></th>`).join('');
-document.getElementById('body').innerHTML = FILAS.map(f => {
-  const lg = LOGO[f.cliente] || ['#475569','#fff']; const lf = LOGOIMG[f.cliente] || '';
-  let tds = `<td class='c1'><div class='cli'><div class='nm'>${f.cliente}</div>${f.sub ? `<div class='sb'>${f.sub}</div>` : ''}${lf ? `<div class='logoimg'><img src='Logos/${lf}' alt='${f.cliente}' data-bg='${lg[0]}' data-fg='${lg[1]}' data-ini='${f.cliente[0]}' onerror='logoFail(this)'></div>` : `<div class='logo' style='background:${lg[0]};color:${lg[1]}'>${f.cliente[0]}</div>`}</div></td><td class='c2 od' data-l='Origen'>${f.origen}</td><td class='c3 od' data-l='Destino'>${f.destino}</td>`;
-  tds += f.cells.map((c, i) => {
-    if (!c || !c.length) return `<td class='day' data-idx='${i}'></td>`;
-    const _st = estadoDia(i); return `<td class='day' data-idx='${i}' data-d='${DIAS[i] ? DIAS[i][0] + ' ' + DIAS[i][1] : ''}'>` + c.map(x => { const isSM = String(x.c).trim().toUpperCase()==='S/M'; if(isSM){ return `<div class='ev ev-off' data-con='S/M'></div>`; } const g = TAG(x.g); const eq=[x.t,x.r].filter(v=>v&&v!=='-').join(' / ')||'-'; return `<div class='ev ${cls(x.e)} ${g[2]} ev-${_st}' data-con='${x.c}' data-tracto='${x.t}' data-semi='${x.r}'><div class='hd'><span class='dot'></span>${x.e}${g[0] ? `<span class='bg ${g[1]}'>${g[0]}</span>` : ''}<span class='st st-${_st}${g[0]?'':' st-auto'}' title='${LBL_ST[_st]}'>${SVG_ST[_st]}</span></div><div class='bd'><div class='li'>${SVG_USER}${defw(x.c)}</div><div class='li'>${SVG_TRUCK}${defw(eq)}</div></div></div>`; }).join('') + `</td>`;
-  }).join('');
-  return `<tr data-cli='${f.cliente}'>${tds}</tr>`;
-}).join('') + `<tr class='sumrow'><td class='c1' style='font-weight:700;font-size:12px;background:#fef2f2;color:#b91c1c'>Fuera de servicio</td><td class='c2 od' style='background:#fef2f2'></td><td class='c3 od' style='background:#fef2f2'></td>` + DIAS.map((d,i)=>`<td class='day' data-idx='${i}' style='background:#fef2f2;font-size:12px;line-height:1.35;color:#b91c1c;vertical-align:top;white-space:normal;text-align:center'>${(typeof FSPAT!=='undefined'&&FSPAT[i])?FSPAT[i].split(', ').join('<br>'):'-'}</td>`).join('') + `</tr><tr class='sumrow'><td class='c1' style='font-weight:700;font-size:12px;background:#eff6ff;color:#1d4ed8'>Disponibles</td><td class='c2 od' style='background:#eff6ff'></td><td class='c3 od' style='background:#eff6ff'></td>` + DIAS.map((d,i)=>`<td class='day' data-idx='${i}' style='background:#eff6ff;font-size:12px;line-height:1.35;color:#1d4ed8;vertical-align:top;white-space:normal;text-align:center'>${(typeof DISPPAT!=='undefined'&&DISPPAT[i])?DISPPAT[i].split(', ').join('<br>'):'-'}</td>`).join('') + `</tr>`;
-(function(){ function _uniq(a){return [...new Set(a)].filter(v=>v&&v!=='-').sort();} const _cli=_uniq(FILAS.map(f=>f.cliente)); const _con=_uniq(FILAS.flatMap(f=>f.cells.filter(Boolean).flat()).map(x=>x.c)); const _tra=_uniq(FILAS.flatMap(f=>f.cells.filter(Boolean).flat()).map(x=>x.t)); const _sem=_uniq(FILAS.flatMap(f=>f.cells.filter(Boolean).flat()).map(x=>x.r)); function _fill(id,arr,ph){const s=document.getElementById(id);if(!s)return;s.innerHTML="<option value=''>"+ph+"</option>"+arr.map(v=>"<option>"+v+"</option>").join('');} _fill('fCli',_cli,'Todos los clientes'); _fill('fCon',_con,'Todos los conductores'); _fill('fTracto',_tra,'Todos los tractos'); _fill('fSemi',_sem,'Todos los semirremolques'); function _iso(d){return d?d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'):'';} const _d0=fechaDia(0),_dn=fechaDia(NDIAS-1); ['fDesde','fHasta'].forEach(id=>{const e=document.getElementById(id);if(e&&_d0&&_dn){e.min=_iso(_d0);e.max=_iso(_dn);}}); var _hoy=new Date();_hoy.setHours(0,0,0,0); var _def=_hoy; if(_d0&&_hoy<_d0)_def=_d0; if(_dn&&_hoy>_dn)_def=_dn; (function(){const e=document.getElementById('fDesde');if(e)e.value=_iso(_def);})(); function aplicar(){ const cli=(document.getElementById('fCli')||{}).value||''; const con=(document.getElementById('fCon')||{}).value||''; const tra=(document.getElementById('fTracto')||{}).value||''; const sem=(document.getElementById('fSemi')||{}).value||''; const vd=(document.getElementById('fDesde')||{}).value||''; const vh=(document.getElementById('fHasta')||{}).value||''; const dd=vd?new Date(vd+'T00:00:00'):null; const dh=vh?new Date(vh+'T00:00:00'):null; document.querySelectorAll('[data-idx]').forEach(el=>{const i=+el.getAttribute('data-idx');const f=fechaDia(i);let v=true;if(f){if(dd&&f<dd)v=false;if(dh&&f>dh)v=false;}el.style.display=v?'':'none';}); document.querySelectorAll('#body .ev').forEach(ev=>{ev.style.display=((!con||ev.getAttribute('data-con')===con)&&(!tra||ev.getAttribute('data-tracto')===tra)&&(!sem||ev.getAttribute('data-semi')===sem))?'':'none';}); document.querySelectorAll('#body tr').forEach(tr=>{if(tr.classList.contains('sumrow')){tr.style.display='';return;} let v=true;if(cli&&tr.getAttribute('data-cli')!==cli)v=false;if(v&&(con||tra||sem)){const any=[...tr.querySelectorAll('.ev')].some(ev=>ev.style.display!=='none'&&ev.closest('td').style.display!=='none');if(!any)v=false;}tr.style.display=v?'':'none';}); } ['fCli','fCon','fTracto','fSemi','fDesde','fHasta'].forEach(id=>{const e=document.getElementById(id);if(e)e.addEventListener('change',aplicar);}); const _clr=document.getElementById('fClr'); if(_clr)_clr.addEventListener('click',function(){['fCli','fCon','fTracto','fSemi','fDesde','fHasta'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});aplicar();}); aplicar(); })();
+const BEACON = `<svg class='baliza' viewBox='0 0 24 24' width='14' height='14' fill='currentColor'><path d='M11 3.5a1 1 0 0 1 2 0V5a5 5 0 0 1 4 4.9V13H7V9.9A5 5 0 0 1 11 5V3.5Z'/><rect x='5' y='13' width='14' height='2.6' rx='1'/><rect x='11' y='15.6' width='2' height='3.4'/><path d='M3.6 8.4 5 9M20.4 8.4 19 9M2.8 12h1.6M19.6 12h1.6' fill='none' stroke='currentColor' stroke-width='1.4' stroke-linecap='round'/></svg>`;
+
+// ---------- Estado global ----------
+let DB = null;        // última respuesta de la API
+let DIAS = [];        // fechas ISO visibles
+let cargando = false;
+let rangoManual = false;
+let EDIT = null;          // sesión de edición {pin, nombre, rol} o null
+const SVG_PEN = `<svg viewBox='0 0 24 24' width='12' height='12' fill='currentColor'><path d='M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25Zm17.7-10.2a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z'/></svg>`;  // true cuando el usuario pidió fechas fuera del rango por defecto
+
+// ---------- Utilidades ----------
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const isoLocal = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const desdeIso = s => { const p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); };
+const sumarDias = (s, n) => { const d = desdeIso(s); d.setDate(d.getDate() + n); return isoLocal(d); };
+const hoyIso = () => isoLocal(new Date());
+const fechaCorta = s => { const d = desdeIso(s); return String(d.getDate()).padStart(2, '0') + '-' + MESES[d.getMonth()]; };
+const fechaLarga = s => { const d = desdeIso(s); return d.getDate() + ' ' + MESES[d.getMonth()] + ' ' + d.getFullYear(); };
+const claseCod = c => String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+function estadoDia(f) { const h = hoyIso(); return f < h ? 'realizado' : (f === h ? 'ejecucion' : 'programado'); }
+function defw(txt) {
+  const s = esc(txt);
+  return s.toUpperCase().indexOf('DEFINIR') === -1 ? s : s.replace(/DEFINIR/gi, "<span class='defw'>DEFINIR" + BEACON + '</span>');
+}
+// Mezcla un color con blanco (para fondos suaves) y lo oscurece (para textos)
+function mezclar(hex, conBlanco) {
+  let h = String(hex || '#94a3b8').replace('#', '');
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h, 16), r = n >> 16 & 255, g = n >> 8 & 255, b = n & 255;
+  const f = v => Math.round(conBlanco >= 0 ? v + (255 - v) * conBlanco : v * (1 + conBlanco));
+  return '#' + [f(r), f(g), f(b)].map(v => v.toString(16).padStart(2, '0')).join('');
+}
+function textoSobre(hex) {
+  let h = String(hex || '').replace('#', ''); if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h, 16); const l = (0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255;
+  return l > 0.6 ? '#422006' : '#ffffff';
+}
+
+// ---------- Estilos dinámicos (colores de estados y tipos desde la base) ----------
+function aplicarEstilos() {
+  const css = [];
+  (DB.estados || []).forEach(e => {
+    const k = 's-' + claseCod(e.codigo), c = e.color || '#94a3b8';
+    css.push(`.${k}{border-color:${mezclar(c, .65)}}.${k} .hd{background:${mezclar(c, .9)};color:${mezclar(c, -.25)}}.${k} .dot{background:${c}}`);
+  });
+  (DB.tiposServicio || []).forEach(t => {
+    const k = claseCod(t.codigo), c = t.color || '#94a3b8';
+    css.push(`.b-${k}{background:${c};color:${textoSobre(c)}}.x-${k}{border-left:4px ${k === 'RET' ? 'dashed' : 'solid'} ${c}}`);
+  });
+  $('dynCss').textContent = css.join('\n');
+}
+
+// ---------- Carga de datos ----------
+let _promCarga = null;
+function cargar(desde, hasta) {
+  if (_promCarga) return _promCarga;
+  _promCarga = _cargar(desde, hasta).finally(() => { _promCarga = null; });
+  return _promCarga;
+}
+async function _cargar(desde, hasta) {
+  cargando = true;
+  setEstadoCarga('Actualizando…');
+  try {
+    const q = new URLSearchParams({ accion: 'datos' });
+    if (desde) q.set('desde', desde);
+    if (hasta) q.set('hasta', hasta);
+    const r = await fetch(API_URL + '?' + q.toString(), { cache: 'no-store' });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'Error desconocido');
+    DB = d;
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(d)); } catch (e) { /* sin almacenamiento */ }
+    render();
+    setEstadoCarga('');
+  } catch (err) {
+    setEstadoCarga('Sin conexión con la base de datos' + (DB ? ' — mostrando la última versión cargada' : ''), true);
+    if (!DB) mostrarError(err);
+  } finally { cargando = false; }
+}
+function setEstadoCarga(txt, error) {
+  const e = $('estadoCarga'); if (!e) return;
+  e.textContent = txt; e.className = 'estcarga' + (error ? ' err' : '') + (txt ? '' : ' oculto');
+}
+function mostrarError(err) {
+  $('body').innerHTML = `<tr><td colspan='40' style='padding:40px;text-align:center;color:#b91c1c;font-size:13px'>No se pudo cargar la programación (${esc(err.message || err)}).<br><br><button class='btnr' onclick='cargar()'>Reintentar</button></td></tr>`;
+}
+
+// ---------- Cálculos ----------
+function indexar() {
+  const celdas = {};   // filaId|fecha -> asignación
+  DB.programacion.forEach(p => { celdas[p.filaId + '|' + p.fecha] = p; });
+  const kpiDe = {}; (DB.estados || []).forEach(e => { kpiDe[e.codigo] = e.kpi; });
+  const flota = (DB.tractos || []).filter(t => t.activo && t.propio).map(t => t.patente);
+  const porDia = {};
+  DIAS.forEach(f => {
+    const usados = new Set(), fs = [], kpi = { CARGA: 0, TRANSITO: 0, DESCARGA: 0, INTERNOS: 0 };
+    DB.filas.forEach(fl => {
+      const p = celdas[fl.id + '|' + f]; if (!p) return;
+      if (p.tracto) usados.add(p.tracto);
+      const k = kpiDe[p.estado]; if (k && kpi[k] != null) kpi[k]++;
+    });
+    DB.fueraServicio.forEach(x => { if (x.desde <= f && x.hasta >= f && fs.indexOf(x.tracto) < 0) fs.push(x.tracto); });
+    const disp = flota.filter(t => !usados.has(t) && fs.indexOf(t) < 0);
+    porDia[f] = { kpi, fs, disp };
+  });
+  return { celdas, porDia };
+}
+
+// ---------- Dibujo ----------
+function render() {
+  aplicarEstilos();
+  DIAS = []; for (let f = DB.desde; f <= DB.hasta; f = sumarDias(f, 1)) DIAS.push(f);
+  const { celdas, porDia } = indexar();
+  const nomEstado = {}; (DB.estados || []).forEach(e => { nomEstado[e.codigo] = e.nombre || e.codigo; });
+  const nomTipo = {}; (DB.tiposServicio || []).forEach(t => { nomTipo[t.codigo] = t.nombre || t.codigo; });
+  const cli = {}; (DB.clientes || []).forEach(c => { cli[c.nombre] = c; });
+  const hoy = hoyIso(), hd = porDia[hoy];
+
+  // Encabezado
+  document.title = (DB.config.Titulo || 'Programación de Camiones');
+  $('titulo').textContent = DB.config.Titulo || 'Programación de Camiones';
+  $('rango').textContent = fechaLarga(DB.desde) + ' – ' + fechaLarga(DB.hasta);
+  $('upd').textContent = DB.ultimaActualizacion || '—';
+  $('brand').innerHTML = `<img src='Logos/TERRACOP.png' alt='TERRACOP'>`;
+
+  // KPIs del día de hoy
+  const v = x => hd ? x : '&mdash;';
+  const kpis = KPI_DEF.map(k => [k[1], v(hd && hd.kpi[k[0]]), k[2], k[0] === 'INTERNOS' ? K_INT : kTruck(k[2])])
+    .concat([['Tractos disp. hoy', v(hd && hd.disp.length), '#0ea5e9', kTruck('#0ea5e9')],
+             ['Fuera de servicio', v(hd && hd.fs.length), '#dc2626', kTruck('#dc2626')]]);
+  $('kpis').innerHTML = kpis.map(k => `<div class='kpi'><div class='ic'>${k[3]}</div><div><div class='lbl'>${k[0]}</div><div class='val' style='color:${k[2]}'>${k[1]}</div></div></div>`).join('');
+
+  // Cabecera de la tabla
+  $('hrow').innerHTML = `<th class='c1'>Cliente</th><th class='c2'>Origen</th><th class='c3'>Destino</th>` +
+    DIAS.map(f => `<th class='day' data-f='${f}'>${DIAS_SEM[desdeIso(f).getDay()]}<span class='d2'>${fechaCorta(f)}</span><span class='d3' style='display:block;font-size:9px;font-weight:700;color:#0ea5e9;margin-top:2px'>${porDia[f].disp.length} disp.</span></th>`).join('');
+
+  // Cuerpo
+  if (!DB.filas.length) {
+    $('body').innerHTML = `<tr><td colspan='${DIAS.length + 3}' class='vacio'><div class='vacio-in'>Aún no hay viajes programados.<span>Cuando se agreguen filas de viaje desde el modo edición aparecerán aquí.</span></div></td></tr>` + (EDIT ? filaAgregar() : '') + filasResumen(porDia);
+  } else {
+    $('body').innerHTML = DB.filas.map(fl => {
+      const c = cli[fl.cliente] || {}, col = c.color || '#475569', fg = c.colorInicial || '#fff', ini = esc((fl.cliente || '?')[0]);
+      const src = c.logo ? (/^https?:/i.test(c.logo) ? c.logo : 'Logos/' + c.logo) : '';
+      const logo = src
+        ? `<div class='logoimg'><img src='${esc(src)}' alt='${esc(fl.cliente)}' data-bg='${esc(col)}' data-fg='${esc(fg)}' data-ini='${ini}' onerror='logoFail(this)'></div>`
+        : `<div class='logo' style='background:${esc(col)};color:${esc(fg)}'>${ini}</div>`;
+      let tds = `<td class='c1${EDIT ? ' c1ed' : ''}' data-filaed='${fl.id}'>${EDIT ? `<span class='pen pen-c'>${SVG_PEN}</span>` : ''}<div class='cli'><div class='nm'>${esc(fl.cliente)}</div>${logo}</div></td><td class='c2 od'>${esc(fl.origen)}</td><td class='c3 od'>${esc(fl.destino)}</td>`;
+      tds += DIAS.map(f => {
+        const p = celdas[fl.id + '|' + f], st = estadoDia(f);
+        if (!p) return `<td class='day' data-f='${f}' data-fila='${fl.id}'><div class='ev ev-off' data-con='S/M'><div class='bd'><div class='li off-li'>${EDIT ? '<span class="add">＋ Asignar</span>' : 'Sin movimiento'}</div></div></div></td>`;
+        const tk = claseCod(p.tipo), tag = p.tipo ? (nomTipo[p.tipo] || p.tipo) : '';
+        const eq = [p.tracto, p.semi].filter(Boolean).join(' / ') || '-';
+        return `<td class='day' data-f='${f}' data-fila='${fl.id}'><div class='ev s-${claseCod(p.estado)} ${tk ? 'x-' + tk : ''} ev-${st}' data-con='${esc(p.conductor)}' data-tracto='${esc(p.tracto)}' data-semi='${esc(p.semi)}'>` +
+          `<div class='hd'><span class='dot'></span>${esc(nomEstado[p.estado] || p.estado)}${tag ? `<span class='bg b-${tk}'>${esc(tag)}</span>` : ''}<span class='st st-${st}${tag ? '' : ' st-auto'}' title='${LBL_ST[st]}'>${SVG_ST[st]}</span></div>` +
+          `<div class='bd'><div class='li'>${SVG_USER}${defw(p.conductor)}</div><div class='li'>${SVG_TRUCK}${defw(eq)}</div></div>${EDIT ? `<span class='pen'>${SVG_PEN}</span>` : ''}</div></td>`;
+      }).join('');
+      return `<tr data-cli='${esc(fl.cliente)}'>${tds}</tr>`;
+    }).join('') + (EDIT ? filaAgregar() : '') + filasResumen(porDia);
+  }
+  llenarFiltros();
+  aplicarFiltros();
+  if (typeof despuesDeRender === 'function') despuesDeRender();
+}
+
+function filasResumen(porDia) {
+  const fila = (titulo, fondo, color, lista) =>
+    `<tr class='sumrow'><td class='c1' style='font-weight:700;font-size:12px;background:${fondo};color:${color}'>${titulo}</td><td class='c2 od' style='background:${fondo}'></td><td class='c3 od' style='background:${fondo}'></td>` +
+    DIAS.map(f => `<td class='day' data-f='${f}' style='background:${fondo};font-size:12px;line-height:1.35;color:${color};vertical-align:top;white-space:normal;text-align:center'>${lista(f).length ? lista(f).map(esc).join('<br>') : '-'}</td>`).join('') + '</tr>';
+  return fila('Fuera de servicio', '#fef2f2', '#b91c1c', f => porDia[f].fs) + fila('Disponibles', '#eff6ff', '#1d4ed8', f => porDia[f].disp);
+}
+
+function logoFail(im) {
+  const d = document.createElement('div'); d.className = 'logo';
+  d.style.background = im.dataset.bg; d.style.color = im.dataset.fg; d.textContent = im.dataset.ini;
+  const p = im.parentNode; p.parentNode.replaceChild(d, p);
+}
+
+// ---------- Filtros ----------
+function llenarFiltros() {
+  const uniq = a => [...new Set(a)].filter(x => x && x !== '-').sort();
+  const fill = (id, arr, ph) => { const s = $(id); const prev = s.value; s.innerHTML = `<option value=''>${ph}</option>` + arr.map(x => `<option>${esc(x)}</option>`).join(''); if (arr.indexOf(prev) >= 0) s.value = prev; };
+  fill('fCli', uniq(DB.filas.map(f => f.cliente)), 'Todos los clientes');
+  fill('fCon', uniq(DB.programacion.map(p => p.conductor)), 'Todos los conductores');
+  fill('fTracto', uniq(DB.programacion.map(p => p.tracto)), 'Todos los tractos');
+  fill('fSemi', uniq(DB.programacion.map(p => p.semi)), 'Todos los semirremolques');
+  if (!$('fDesde').value) $('fDesde').value = (hoyIso() >= DB.desde && hoyIso() <= DB.hasta) ? hoyIso() : DB.desde;
+}
+function aplicarFiltros() {
+  const cli = $('fCli').value, con = $('fCon').value, tra = $('fTracto').value, sem = $('fSemi').value;
+  const fd = $('fDesde').value, fh = $('fHasta').value;
+  document.querySelectorAll('[data-f]').forEach(el => {
+    const f = el.getAttribute('data-f');
+    el.style.display = ((!fd || f >= fd) && (!fh || f <= fh)) ? '' : 'none';
+  });
+  document.querySelectorAll('#body .ev').forEach(ev => {
+    ev.style.display = ((!con || ev.dataset.con === con) && (!tra || ev.dataset.tracto === tra) && (!sem || ev.dataset.semi === sem)) ? '' : 'none';
+  });
+  document.querySelectorAll('#body tr').forEach(tr => {
+    if (tr.classList.contains('sumrow') || !tr.dataset.cli) { tr.style.display = ''; return; }
+    let vis = !cli || tr.dataset.cli === cli;
+    if (vis && (con || tra || sem)) vis = [...tr.querySelectorAll('.ev')].some(ev => ev.style.display !== 'none' && ev.closest('td').style.display !== 'none');
+    tr.style.display = vis ? '' : 'none';
+  });
+}
+// Si el rango elegido se sale de lo cargado, se piden más días a la API
+function cambioFechas() {
+  const fd = $('fDesde').value, fh = $('fHasta').value;
+  if (DB && ((fd && fd < DB.desde) || (fh && fh > DB.hasta))) {
+    rangoManual = true;
+    cargar(fd && fd < DB.desde ? fd : DB.desde, fh && fh > DB.hasta ? fh : DB.hasta);
+  } else aplicarFiltros();
+}
+
+// ---------- Inicio ----------
+document.addEventListener('DOMContentLoaded', () => {
+  ['fCli', 'fCon', 'fTracto', 'fSemi'].forEach(id => $(id).addEventListener('change', aplicarFiltros));
+  ['fDesde', 'fHasta'].forEach(id => $(id).addEventListener('change', cambioFechas));
+  $('fClr').addEventListener('click', () => {
+    ['fCli', 'fCon', 'fTracto', 'fSemi', 'fHasta'].forEach(id => { $(id).value = ''; });
+    $('fDesde').value = ''; rangoManual = false; aplicarFiltros();
+  });
+  try { const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null'); if (c && c.ok) { DB = c; render(); } } catch (e) { /* sin caché */ }
+  cargar();
+  // Recarga periódica: con el rango por defecto la ventana avanza sola cada día (útil en la TV de la oficina)
+  setInterval(() => { if (!document.hidden) rangoManual && DB ? cargar(DB.desde, DB.hasta) : cargar(); }, REFRESCO_MS);
+});
+
+/* ============================================================
+   ETAPA 3 — MODO EDICIÓN
+   PIN · editar día · filas de viaje · fuera de servicio · copiar días · maestros
+   ============================================================ */
+const SES_KEY = 'tc_prog_sesion_v1';
+const KPI_NOMBRES = { '': '— Ninguno —', CARGA: 'En carga', TRANSITO: 'En tránsito', DESCARGA: 'En descarga', INTERNOS: 'Mov. internos' };
+const DIAS_CORTOS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+// Restaurar sesión de la pestaña (se borra al cerrar el navegador)
+try { const s = JSON.parse(sessionStorage.getItem(SES_KEY) || 'null'); if (s && s.pin) EDIT = s; } catch (e) { /* sin sesión */ }
+
+// ---------- Llamadas a la API (escritura) ----------
+async function api(accion, datos) {
+  const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify(Object.assign({ accion, pin: EDIT && EDIT.pin }, datos || {})) });
+  const d = await r.json();
+  if (!d.ok) {
+    if (/PIN incorrecto|Demasiados intentos/.test(d.error || '') && accion !== 'login') salirEdicion(true);
+    throw new Error(d.error || 'Error al guardar');
+  }
+  return d;
+}
+async function recargar() { await cargar(rangoManual && DB ? DB.desde : undefined, rangoManual && DB ? DB.hasta : undefined); }
+
+// ---------- Avisos ----------
+function aviso(txt, tipo) {
+  let t = $('toast');
+  if (!t) { t = document.createElement('div'); t.id = 'toast'; document.body.appendChild(t); }
+  t.className = 'toast ' + (tipo || 'ok'); t.textContent = txt; t.style.opacity = '1';
+  clearTimeout(t._h); t._h = setTimeout(() => { t.style.opacity = '0'; }, tipo === 'err' ? 6000 : 2800);
+}
+
+// ---------- Ventanas modales ----------
+function abrirModal(titulo, subtitulo, cuerpo, pie, ancho) {
+  cerrarModal();
+  const o = document.createElement('div'); o.className = 'ovl'; o.id = 'ovl';
+  o.innerHTML = `<div class='mdl' style='${ancho ? 'width:' + ancho + 'px' : ''}'><div class='mh'><div><h3>${titulo}</h3>${subtitulo ? `<p>${subtitulo}</p>` : ''}</div><button class='x' data-cerrar>×</button></div><div class='mb'>${cuerpo}</div>${pie ? `<div class='mf'>${pie}</div>` : ''}</div>`;
+  o.addEventListener('mousedown', e => { if (e.target === o) cerrarModal(); });
+  o.querySelectorAll('[data-cerrar]').forEach(b => b.addEventListener('click', cerrarModal));
+  document.body.appendChild(o);
+  return o;
+}
+function cerrarModal() { const o = $('ovl'); if (o) o.remove(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+// Bloquea los botones mientras se guarda
+async function ocupado(btn, fn) {
+  const bs = document.querySelectorAll('#ovl button'); bs.forEach(b => { b.disabled = true; });
+  const txt = btn ? btn.textContent : ''; if (btn) btn.textContent = 'Guardando…';
+  try { return await fn(); } catch (e) { aviso(e.message || String(e), 'err'); return null; }
+  finally { bs.forEach(b => { b.disabled = false; }); if (btn) btn.textContent = txt; }
+}
+const opciones = (lista, actual, vacio) => (vacio != null ? `<option value=''>${vacio}</option>` : '') +
+  lista.map(v => { const val = Array.isArray(v) ? v[0] : v, lab = Array.isArray(v) ? v[1] : v; return `<option value='${esc(val)}'${String(val) === String(actual) ? ' selected' : ''}>${esc(lab)}</option>`; }).join('');
+// Lista de un maestro: activos + el valor actual aunque esté inactivo
+function activos(lista, campo, actual) {
+  const v = lista.filter(x => x.activo).map(x => x[campo]);
+  if (actual && v.indexOf(actual) < 0) v.unshift(actual);
+  return v;
+}
+const diaTxt = f => DIAS_CORTOS[desdeIso(f).getDay()] + ' ' + fechaCorta(f);
+
+// ============================================================
+//  ENTRAR / SALIR
+// ============================================================
+function pedirPin() {
+  const o = abrirModal('Modo edición', 'Ingresa tu PIN para programar', `
+    <div class='full'><input id='pinIn' class='inp big' type='password' inputmode='numeric' autocomplete='off' maxlength='8' placeholder='PIN'></div>
+    <div class='full err' id='pinErr'></div>`,
+    `<span class='sp'></span><button class='eb eb-g' data-cerrar>Cancelar</button><button class='eb eb-p' id='pinOk'>Entrar</button>`, 360);
+  const inp = $('pinIn'); inp.focus();
+  const go = () => ocupado($('pinOk'), async () => {
+    const pin = inp.value.trim(); if (!pin) return;
+    EDIT = { pin };
+    try {
+      const d = await api('login');
+      EDIT = { pin, nombre: d.nombre, rol: d.rol };
+      try { sessionStorage.setItem(SES_KEY, JSON.stringify(EDIT)); } catch (e) { /* sin almacenamiento */ }
+      cerrarModal(); render(); aviso('Hola ' + d.nombre + ', modo edición activo');
+    } catch (e) { EDIT = null; $('pinErr').textContent = e.message; inp.select(); }
+  });
+  $('pinOk').addEventListener('click', go);
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+  o.querySelectorAll('[data-cerrar]').forEach(b => b.addEventListener('click', cerrarModal));
+}
+function salirEdicion(porError) {
+  EDIT = null; try { sessionStorage.removeItem(SES_KEY); } catch (e) { /* nada */ }
+  cerrarModal(); if (DB) render();
+  if (porError) aviso('La sesión de edición se cerró: vuelve a ingresar tu PIN', 'err');
+}
+
+// Barra superior del modo edición + botón de entrada
+function despuesDeRender() {
+  let bar = $('edbar');
+  if (!bar) { bar = document.createElement('div'); bar.id = 'edbar'; const f = document.querySelector('.filters'); f.parentNode.insertBefore(bar, f); }
+  let btn = $('btnEditar');
+  if (!btn) { btn = document.createElement('button'); btn.id = 'btnEditar'; btn.className = 'btn-editar'; document.querySelector('.filters').appendChild(btn); btn.addEventListener('click', pedirPin); }
+  btn.innerHTML = `${SVG_PEN} Editar`;
+  btn.style.display = EDIT ? 'none' : '';
+  document.body.classList.toggle('edon', !!EDIT);
+  if (!EDIT) { bar.className = ''; bar.innerHTML = ''; return; }
+  bar.className = 'edbar';
+  bar.innerHTML = `<span class='pill'><i></i>Modo edición</span><span class='who'>${esc(EDIT.nombre)} · ${EDIT.rol === 'admin' ? 'Administrador' : 'Editor'}</span><span class='sp'></span>
+    <button class='eb eb-p' id='bNuevo'>＋ Nuevo viaje</button><button class='eb eb-s' id='bCopiar'>⧉ Copiar días</button>
+    <button class='eb eb-r' id='bFS'>⛔ Fuera de servicio</button><button class='eb eb-g' id='bMae'>⚙ Maestros</button><button class='eb eb-g' id='bSalir'>Salir</button>`;
+  $('bNuevo').onclick = () => editarFila(null);
+  $('bCopiar').onclick = copiarDias;
+  $('bFS').onclick = () => fueraServicio();
+  $('bMae').onclick = () => maestros('Conductores');
+  $('bSalir').onclick = () => salirEdicion(false);
+}
+function filaAgregar() {
+  return `<tr class='addrow'><td class='c1' colspan='3'><button class='ar' onclick='editarFila(null)'>＋ Agregar viaje</button></td><td colspan='${DIAS.length}'></td></tr>`;
+}
+// Clic en tarjetas / celdas / cliente
+document.addEventListener('click', e => {
+  if (!EDIT || !DB) return;
+  const td = e.target.closest('#body td.day[data-fila]');
+  if (td) { editarCelda(td.dataset.fila, td.dataset.f); return; }
+  const c1 = e.target.closest('#body td.c1[data-filaed]');
+  if (c1) editarFila(c1.dataset.filaed);
+});
+
+// ============================================================
+//  EDITAR UN DÍA
+// ============================================================
+function cruces(filaId, fecha, conductor, tracto, semi) {
+  const out = [], fila = id => DB.filas.find(f => f.id === id) || {};
+  DB.programacion.forEach(p => {
+    if (p.fecha !== fecha || p.filaId === filaId) return;
+    const fl = fila(p.filaId), donde = `${fl.cliente} · ${fl.origen} → ${fl.destino}`;
+    if (tracto && p.tracto === tracto) out.push(`${tracto} ya está asignado en ${donde}`);
+    if (semi && p.semi === semi) out.push(`${semi} ya está asignado en ${donde}`);
+    if (conductor && conductor !== 'DEFINIR' && p.conductor === conductor) out.push(`${conductor} ya está asignado en ${donde}`);
+  });
+  if (tracto && DB.fueraServicio.some(x => x.tracto === tracto && x.desde <= fecha && x.hasta >= fecha)) out.push(`${tracto} está fuera de servicio ese día`);
+  return out;
+}
+function editarCelda(filaId, fecha) {
+  const fl = DB.filas.find(f => f.id === filaId); if (!fl) return;
+  const p = DB.programacion.find(x => x.filaId === filaId && x.fecha === fecha) || {};
+  const est = DB.estados.filter(e => e.activo || e.codigo === p.estado);
+  const tip = DB.tiposServicio.filter(t => t.activo || t.codigo === p.tipo);
+  let estado = p.estado || '', tipo = p.tipo || '';
+  const chipE = est.map(e => `<button class='chip${e.codigo === estado ? ' on' : ''}' data-e='${esc(e.codigo)}'><i style='background:${esc(e.color)}'></i>${esc(e.nombre || e.codigo)}</button>`).join('') +
+    `<button class='chip${!estado ? ' on' : ''}' data-e=''><i style='background:#94a3b8'></i>Sin movimiento</button>`;
+  const chipT = `<button class='chip${!tipo ? ' on' : ''}' data-t=''>Normal</button>` + tip.map(t => `<button class='chip${t.codigo === tipo ? ' on' : ''}' data-t='${esc(t.codigo)}'><i style='background:${esc(t.color)}'></i>${esc(t.nombre || t.codigo)}</button>`).join('');
+  const cond = activos(DB.conductores, 'nombre', p.conductor).filter(x => x !== 'DEFINIR');
+  const tra = activos(DB.tractos, 'patente', p.tracto), sem = activos(DB.semirremolques, 'patente', p.semi);
+  abrirModal(p.estado ? 'Editar programación' : 'Asignar día', `${esc(fl.cliente)} · ${esc(fl.origen)} → ${esc(fl.destino)} · ${DIAS_SEM[desdeIso(fecha).getDay()]} ${fechaCorta(fecha)}`, `
+    <div class='full'><div class='fl'>Estado del día</div><div class='chips' id='chE'>${chipE}</div></div>
+    <div class='full dep'><div class='fl'>Tipo de servicio</div><div class='chips' id='chT'>${chipT}</div></div>
+    <div class='full dep'><div class='fl'>Conductor</div><select id='eCon' class='inp'>${opciones([['DEFINIR', 'POR DEFINIR']].concat(cond), p.conductor || 'DEFINIR')}</select></div>
+    <div class='dep'><div class='fl'>Tracto</div><select id='eTra' class='inp'>${opciones([['', '—'], ['DEFINIR', 'POR DEFINIR']].concat(tra), p.tracto || '')}</select></div>
+    <div class='dep'><div class='fl'>Semirremolque</div><select id='eSem' class='inp'>${opciones([['', '—'], ['DEFINIR', 'POR DEFINIR']].concat(sem), p.semi || '')}</select></div>
+    <div class='full' id='eWarn'></div>
+    <div class='full rep'><label><input type='checkbox' id='eRep'> Repetir hasta</label><input type='date' id='eHasta' class='inp sm' min='${sumarDias(fecha, 1)}' value='${sumarDias(fecha, 3)}' disabled><span class='hint2' id='eRepN'></span></div>`,
+    `${p.estado ? `<button class='eb del' id='eDel'>Dejar sin movimiento</button>` : ''}<span class='sp'></span><button class='eb eb-g' data-cerrar>Cancelar</button><button class='eb eb-p' id='eOk'>Guardar</button>`);
+  const fechas = () => {
+    if (!$('eRep').checked) return [fecha];
+    const h = $('eHasta').value, out = [];
+    for (let f = fecha; h && f <= h && out.length < 120; f = sumarDias(f, 1)) out.push(f);
+    return out.length ? out : [fecha];
+  };
+  const refrescar = () => {
+    document.querySelectorAll('#ovl .dep').forEach(x => { x.style.display = estado ? '' : 'none'; });
+    $('eHasta').disabled = !$('eRep').checked;
+    const fs = fechas(); $('eRepN').textContent = fs.length > 1 ? fs.length + ' días' : '';
+    if (!estado) { $('eWarn').innerHTML = ''; return; }
+    const c = $('eCon').value, t = $('eTra').value, s = $('eSem').value, msgs = [];
+    fs.forEach(f => cruces(filaId, f, c, t, s).forEach(m => msgs.push((fs.length > 1 ? diaTxt(f) + ': ' : '') + m)));
+    $('eWarn').innerHTML = msgs.length ? `<div class='warn'>⚠ ${msgs.slice(0, 4).map(esc).join('<br>⚠ ')}${msgs.length > 4 ? `<br>… y ${msgs.length - 4} cruces más` : ''}</div>` : '';
+  };
+  $('chE').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; estado = b.dataset.e; $('chE').querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === b)); refrescar(); });
+  $('chT').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b) return; tipo = b.dataset.t; $('chT').querySelectorAll('.chip').forEach(x => x.classList.toggle('on', x === b)); });
+  ['eCon', 'eTra', 'eSem', 'eRep', 'eHasta'].forEach(id => $(id).addEventListener('change', refrescar));
+  refrescar();
+  const guardar = (btn, sinMov) => ocupado(btn, async () => {
+    const celdas = fechas().map(f => sinMov || !estado
+      ? { filaId, fecha: f, estado: 'SM' }
+      : { filaId, fecha: f, estado, tipo, conductor: $('eCon').value, tracto: $('eTra').value, semi: $('eSem').value });
+    const r = await api('guardarCeldas', { celdas });
+    cerrarModal(); await recargar();
+    aviso(`Guardado: ${r.nuevas} nuevas, ${r.modificadas} modificadas, ${r.borradas} sin movimiento`);
+  });
+  $('eOk').addEventListener('click', e => guardar(e.target, false));
+  if ($('eDel')) $('eDel').addEventListener('click', e => guardar(e.target, true));
+}
+
+// ============================================================
+//  FILAS DE VIAJE (cliente · origen · destino)
+// ============================================================
+function editarFila(id) {
+  const fl = id ? DB.filas.find(f => f.id === id) : { cliente: '', origen: '', destino: '' };
+  if (!fl) return;
+  const cls = activos(DB.clientes, 'nombre', fl.cliente);
+  const pos = id ? DB.filas.findIndex(f => f.id === id) : -1;
+  abrirModal(id ? 'Editar viaje' : 'Nuevo viaje', id ? 'Cliente y ruta de esta fila' : 'Se agregará una fila nueva a la programación', `
+    <div class='full'><div class='fl'>Cliente</div><select id='rCli' class='inp'>${opciones(cls, fl.cliente, '— Elegir cliente —')}</select>
+      <div class='hint2'>¿No está en la lista? Agrégalo en <a href='#' id='rIrCli'>Maestros → Clientes</a>.</div></div>
+    <div><div class='fl'>Origen</div><input id='rOri' class='inp' value='${esc(fl.origen)}' list='dlLug'></div>
+    <div><div class='fl'>Destino</div><input id='rDes' class='inp' value='${esc(fl.destino)}' list='dlLug'></div>
+    <datalist id='dlLug'>${[...new Set(DB.filas.flatMap(f => [f.origen, f.destino]).filter(Boolean))].sort().map(x => `<option value='${esc(x)}'>`).join('')}</datalist>
+    ${id ? `<div class='full'><div class='fl'>Posición en la tabla</div><div class='chips'><button class='chip' id='rUp' ${pos <= 0 ? 'disabled' : ''}>▲ Subir</button><button class='chip' id='rDown' ${pos >= DB.filas.length - 1 ? 'disabled' : ''}>▼ Bajar</button></div></div>` : ''}`,
+    `${id ? `<button class='eb del' id='rDel'>Quitar viaje</button>` : ''}<span class='sp'></span><button class='eb eb-g' data-cerrar>Cancelar</button><button class='eb eb-p' id='rOk'>Guardar</button>`);
+  $('rIrCli').onclick = e => { e.preventDefault(); maestros('Clientes'); };
+  $('rOk').onclick = e => ocupado(e.target, async () => {
+    const cliente = $('rCli').value; if (!cliente) throw new Error('Elige un cliente');
+    await api('guardarFila', { fila: { id: id || undefined, cliente, origen: $('rOri').value, destino: $('rDes').value } });
+    cerrarModal(); await recargar(); aviso(id ? 'Viaje actualizado' : 'Viaje agregado');
+  });
+  if (id) {
+    $('rDel').onclick = e => {
+      if (!confirmar(`¿Quitar el viaje ${fl.cliente} · ${fl.origen} → ${fl.destino}? Su historial se conserva en la base de datos.`)) return;
+      ocupado(e.target, async () => {
+        await api('guardarFila', { fila: { id, cliente: fl.cliente, origen: fl.origen, destino: fl.destino, activa: false } });
+        cerrarModal(); await recargar(); aviso('Viaje quitado');
+      });
+    };
+    const mover = (btn, d) => ocupado(btn, async () => {
+      const ids = DB.filas.map(f => f.id), i = ids.indexOf(id), j = i + d;
+      if (j < 0 || j >= ids.length) return;
+      [ids[i], ids[j]] = [ids[j], ids[i]];
+      await api('ordenarFilas', { ids });
+      await recargar(); editarFila(id);
+    });
+    $('rUp').onclick = e => mover(e.target, -1);
+    $('rDown').onclick = e => mover(e.target, 1);
+  }
+}
+// Confirmación dentro de la página (sin ventanas del navegador)
+function confirmar(txt) { return window.__confirmarAuto ? true : window.confirm(txt); }
+
+// ============================================================
+//  FUERA DE SERVICIO
+// ============================================================
+function fueraServicio(editarId) {
+  const lista = DB.fueraServicio.slice().sort((a, b) => a.desde < b.desde ? -1 : 1);
+  const x = editarId ? lista.find(r => r.id === editarId) : { tracto: '', desde: hoyIso(), hasta: hoyIso(), motivo: '' };
+  const tra = activos(DB.tractos, 'patente', x.tracto);
+  abrirModal('Fuera de servicio', 'Tractos en mantención, falla u otro motivo', `
+    <div class='full sub'>${editarId ? 'Editar período' : 'Nuevo período'}</div>
+    <div><div class='fl'>Tracto</div><select id='fTra' class='inp'>${opciones(tra, x.tracto, '— Elegir —')}</select></div>
+    <div><div class='fl'>Motivo</div><input id='fMot' class='inp' value='${esc(x.motivo)}' placeholder='Mantención, falla…'></div>
+    <div><div class='fl'>Desde</div><input id='fDe' type='date' class='inp' value='${x.desde}'></div>
+    <div><div class='fl'>Hasta</div><input id='fHa' type='date' class='inp' value='${x.hasta}'></div>
+    <div class='full'><button class='eb eb-p' id='fOk'>${editarId ? 'Guardar cambios' : '＋ Agregar período'}</button>${editarId ? ` <button class='eb eb-g' id='fNuevo'>Cancelar edición</button>` : ''}</div>
+    <div class='full sub'>Períodos en las fechas visibles</div>
+    <div class='full'>${lista.length ? `<table class='tb'><tr><th>Tracto</th><th>Desde</th><th>Hasta</th><th>Motivo</th><th></th></tr>${lista.map(r => `<tr><td><b>${esc(r.tracto)}</b></td><td>${fechaCorta(r.desde)}</td><td>${fechaCorta(r.hasta)}</td><td>${esc(r.motivo)}</td><td class='acc'><button class='lnk' data-ed='${r.id}'>Editar</button><button class='lnk rojo' data-del='${r.id}'>Eliminar</button></td></tr>`).join('')}</table>` : `<div class='hint2'>No hay tractos fuera de servicio en este rango.</div>`}</div>`,
+    `<span class='sp'></span><button class='eb eb-g' data-cerrar>Cerrar</button>`, 640);
+  $('fOk').onclick = e => ocupado(e.target, async () => {
+    if (!$('fTra').value) throw new Error('Elige un tracto');
+    await api('guardarFS', { fs: { id: editarId || undefined, tracto: $('fTra').value, desde: $('fDe').value, hasta: $('fHa').value, motivo: $('fMot').value } });
+    await recargar(); fueraServicio(); aviso('Período guardado');
+  });
+  if ($('fNuevo')) $('fNuevo').onclick = () => fueraServicio();
+  document.querySelectorAll('#ovl [data-ed]').forEach(b => { b.onclick = () => fueraServicio(b.dataset.ed); });
+  document.querySelectorAll('#ovl [data-del]').forEach(b => {
+    b.onclick = () => { if (!confirmar('¿Eliminar este período fuera de servicio?')) return;
+      ocupado(b, async () => { await api('eliminarFS', { id: b.dataset.del }); await recargar(); fueraServicio(); aviso('Período eliminado'); }); };
+  });
+}
+
+// ============================================================
+//  COPIAR DÍAS (p.ej. repetir una semana)
+// ============================================================
+function copiarDias() {
+  const h = hoyIso();
+  abrirModal('Copiar días', 'Copia la programación de un rango de días a otras fechas (todas las filas)', `
+    <div><div class='fl'>Copiar desde</div><input id='cDe' type='date' class='inp' value='${h}' min='${DB.desde}' max='${DB.hasta}'></div>
+    <div><div class='fl'>Hasta</div><input id='cHa' type='date' class='inp' value='${sumarDias(h, 6)}' min='${DB.desde}' max='${DB.hasta}'></div>
+    <div class='full'><div class='fl'>Pegar a partir del</div><input id='cDest' type='date' class='inp' value='${sumarDias(h, 7)}'></div>
+    <div class='full rep'><label><input type='checkbox' id='cSM'> Incluir los días "Sin movimiento" (borra lo que haya en el destino)</label></div>
+    <div class='full' id='cRes'></div>`,
+    `<span class='sp'></span><button class='eb eb-g' data-cerrar>Cancelar</button><button class='eb eb-p' id='cOk'>Copiar</button>`, 520);
+  const calcular = () => {
+    const de = $('cDe').value, ha = $('cHa').value, dest = $('cDest').value, out = [];
+    if (!de || !ha || !dest || ha < de) return { out, err: 'Revisa las fechas' };
+    if (de < DB.desde || ha > DB.hasta) return { out, err: `El origen debe estar entre ${fechaCorta(DB.desde)} y ${fechaCorta(DB.hasta)} (amplía el filtro de fechas si necesitas otro rango)` };
+    const off = Math.round((desdeIso(dest) - desdeIso(de)) / 864e5);
+    if (off === 0) return { out, err: 'El destino no puede ser igual al origen' };
+    for (let f = de; f <= ha; f = sumarDias(f, 1)) {
+      DB.filas.forEach(fl => {
+        const p = DB.programacion.find(x => x.filaId === fl.id && x.fecha === f), nf = sumarDias(f, off);
+        if (p) out.push({ filaId: fl.id, fecha: nf, estado: p.estado, tipo: p.tipo, conductor: p.conductor, tracto: p.tracto, semi: p.semi });
+        else if ($('cSM').checked) out.push({ filaId: fl.id, fecha: nf, estado: 'SM' });
+      });
+    }
+    return { out, dias: Math.round((desdeIso(ha) - desdeIso(de)) / 864e5) + 1, hastaDest: sumarDias(ha, off) };
+  };
+  const ver = () => {
+    const r = calcular();
+    $('cRes').innerHTML = r.err ? `<div class='warn'>${esc(r.err)}</div>` :
+      `<div class='okbox'>Se copiarán <b>${r.out.filter(c => c.estado !== 'SM').length}</b> asignaciones de ${r.dias} días al rango ${fechaCorta($('cDest').value)} – ${fechaCorta(r.hastaDest)}.${r.out.length > 500 ? '<br>⚠ Son más de 500 celdas: elige un rango más corto.' : ''}</div>`;
+  };
+  ['cDe', 'cHa', 'cDest', 'cSM'].forEach(id => $(id).addEventListener('change', ver)); ver();
+  $('cOk').onclick = e => ocupado(e.target, async () => {
+    const r = calcular(); if (r.err) throw new Error(r.err);
+    if (!r.out.length) throw new Error('No hay asignaciones para copiar en ese rango');
+    const res = await api('guardarCeldas', { celdas: r.out });
+    cerrarModal(); await recargar();
+    aviso(`Copiado: ${res.nuevas} nuevas, ${res.modificadas} reemplazadas${res.borradas ? ', ' + res.borradas + ' sin movimiento' : ''}`);
+  });
+}
+
+// ============================================================
+//  MAESTROS
+// ============================================================
+const MAE = {
+  Conductores:    { tit: 'Conductores', uno: 'conductor', clave: 'nombre', lista: () => DB.conductores, campos: [['nombre', 'Nombre', 'text'], ['activo', 'Activo', 'bool']] },
+  Tractos:        { tit: 'Tractos', uno: 'tracto', clave: 'patente', lista: () => DB.tractos, campos: [['patente', 'Patente', 'text'], ['propio', 'Propio (se cuenta en disponibles)', 'bool'], ['activo', 'Activo', 'bool']] },
+  Semirremolques: { tit: 'Semirremolques', uno: 'semirremolque', clave: 'patente', lista: () => DB.semirremolques, campos: [['patente', 'Patente', 'text'], ['activo', 'Activo', 'bool']] },
+  Clientes:       { tit: 'Clientes', uno: 'cliente', clave: 'nombre', lista: () => DB.clientes, campos: [['nombre', 'Nombre', 'text'], ['logo', 'Logo', 'logo'], ['color', 'Color del círculo (sin logo)', 'color'], ['colorInicial', 'Color de la inicial', 'color'], ['activo', 'Activo', 'bool']] },
+  Estados:        { tit: 'Estados del día', uno: 'estado', clave: 'codigo', fija: true, lista: () => DB.estados, campos: [['codigo', 'Código (no se puede cambiar después)', 'code'], ['nombre', 'Nombre visible', 'text'], ['color', 'Color', 'color'], ['kpi', 'Se cuenta en el indicador', 'kpi'], ['orden', 'Orden', 'number'], ['activo', 'Activo', 'bool']] },
+  TiposServicio:  { tit: 'Tipos de servicio', uno: 'tipo de servicio', clave: 'codigo', fija: true, lista: () => DB.tiposServicio, campos: [['codigo', 'Código (no se puede cambiar después)', 'code'], ['nombre', 'Nombre visible', 'text'], ['color', 'Color de la etiqueta', 'color'], ['activo', 'Activo', 'bool']] },
+  Usuarios:       { tit: 'Usuarios', uno: 'usuario', clave: 'nombre', admin: true, lista: () => USUARIOS, campos: [['nombre', 'Nombre', 'text'], ['pin', 'PIN (4 a 8 dígitos)', 'pin'], ['rol', 'Rol', 'rol'], ['activo', 'Activo', 'bool']] },
+  Config:         { tit: 'Configuración', admin: true }
+};
+let USUARIOS = [];
+
+async function maestros(tipo, editar) {
+  const m = MAE[tipo];
+  if (m.admin && EDIT.rol !== 'admin') { aviso('Solo un administrador puede ver esta sección', 'err'); return; }
+  if (tipo === 'Usuarios' && editar === undefined) {
+    try { USUARIOS = (await api('listarUsuarios')).usuarios; } catch (e) { aviso(e.message, 'err'); return; }
+  }
+  const tabs = Object.keys(MAE).filter(k => !MAE[k].admin || EDIT.rol === 'admin')
+    .map(k => `<button class='tab${k === tipo ? ' on' : ''}' data-tab='${k}'>${MAE[k].tit}</button>`).join('');
+  let cuerpo;
+  if (tipo === 'Config') cuerpo = formConfig();
+  else {
+    const lista = m.lista().slice();
+    const reg = editar === null ? nuevoRegistro(tipo) : (editar !== undefined ? lista.find(r => String(r[m.clave]) === String(editar)) : null);
+    cuerpo = (reg ? formMaestro(tipo, reg, editar === null) : `<div class='full'><button class='eb eb-p' id='mNuevo'>＋ Agregar ${m.uno}</button></div>`) + listaMaestro(tipo, lista);
+  }
+  abrirModal('Maestros', 'Listas que alimentan los formularios', `<div class='full tabs'>${tabs}</div>${cuerpo}`,
+    `<span class='sp'></span><button class='eb eb-g' data-cerrar>Cerrar</button>`, 760);
+  document.querySelectorAll('#ovl [data-tab]').forEach(b => { b.onclick = () => maestros(b.dataset.tab); });
+  if ($('mNuevo')) $('mNuevo').onclick = () => maestros(tipo, null);
+  document.querySelectorAll('#ovl [data-mae]').forEach(b => { b.onclick = () => maestros(tipo, b.dataset.mae); });
+  if (tipo === 'Config') montarConfig();
+  else if ($('mOk')) montarFormMaestro(tipo, editar);
+}
+function nuevoRegistro(tipo) {
+  return { Conductores: { nombre: '', activo: true }, Tractos: { patente: '', propio: true, activo: true }, Semirremolques: { patente: '', activo: true },
+    Clientes: { nombre: '', logo: '', color: '#1e6fa8', colorInicial: '#ffffff', activo: true },
+    Estados: { codigo: '', nombre: '', color: '#0ea5e9', kpi: '', orden: (DB.estados.length + 1), activo: true },
+    TiposServicio: { codigo: '', nombre: '', color: '#7c3aed', activo: true }, Usuarios: { nombre: '', pin: '', rol: 'editor', activo: true } }[tipo];
+}
+function srcLogo(l) { return l ? (/^https?:/i.test(l) ? l : 'Logos/' + l) : ''; }
+function listaMaestro(tipo, lista) {
+  const m = MAE[tipo];
+  if (!lista.length) return `<div class='full hint2'>Todavía no hay registros.</div>`;
+  const cols = m.campos.filter(c => c[2] !== 'pin');
+  const celda = (r, c) => {
+    const v = r[c[0]];
+    if (c[2] === 'bool') return v ? `<span class='si'>Sí</span>` : `<span class='no'>No</span>`;
+    if (c[2] === 'color') return `<span class='sw' style='background:${esc(v)}'></span>`;
+    if (c[2] === 'logo') return v ? `<img class='mini' src='${esc(srcLogo(v))}' alt=''>` : `<span class='logo mini2' style='background:${esc(r.color)};color:${esc(r.colorInicial)}'>${esc((r.nombre || '?')[0])}</span>`;
+    if (c[2] === 'kpi') return esc(KPI_NOMBRES[v || ''] || v);
+    return esc(v);
+  };
+  const ord = lista.slice().sort((a, b) => (b.activo - a.activo) || (tipo === 'Estados' ? (+a.orden || 99) - (+b.orden || 99) : String(a[m.clave]).localeCompare(String(b[m.clave]))));
+  return `<div class='full'><table class='tb'><tr>${cols.map(c => `<th>${esc(c[1].replace(/ \(.*\)/, ''))}</th>`).join('')}<th></th></tr>` +
+    ord.map(r => `<tr class='${r.activo ? '' : 'inact'}'>${cols.map(c => `<td>${celda(r, c)}</td>`).join('')}<td class='acc'><button class='lnk' data-mae='${esc(r[m.clave])}'>Editar</button></td></tr>`).join('') + '</table></div>';
+}
+function formMaestro(tipo, r, nuevo) {
+  const m = MAE[tipo];
+  const campo = c => {
+    const [k, lab, t] = c, v = r[k] == null ? '' : r[k], id = 'm_' + k;
+    if (t === 'bool') return `<div class='full rep'><label><input type='checkbox' id='${id}' ${v ? 'checked' : ''}> ${lab}</label></div>`;
+    if (t === 'color') return `<div><div class='fl'>${lab}</div><div class='colrow'><input type='color' id='${id}' value='${esc(v || '#1e6fa8')}'><input class='inp' id='${id}_t' value='${esc(v || '#1e6fa8')}' maxlength='7'></div></div>`;
+    if (t === 'kpi') return `<div><div class='fl'>${lab}</div><select class='inp' id='${id}'>${opciones(Object.keys(KPI_NOMBRES).map(x => [x, KPI_NOMBRES[x]]), v)}</select></div>`;
+    if (t === 'rol') return `<div><div class='fl'>${lab}</div><select class='inp' id='${id}'>${opciones([['editor', 'Editor (programa y edita maestros)'], ['admin', 'Administrador (además usuarios y configuración)']], v)}</select></div>`;
+    if (t === 'pin') return `<div><div class='fl'>${lab}</div><input class='inp' id='${id}' inputmode='numeric' maxlength='8' autocomplete='off' placeholder='${nuevo ? '' : 'Dejar vacío para no cambiarlo'}'></div>`;
+    if (t === 'logo') return `<div class='full'><div class='fl'>${lab}</div><div class='logorow'><div class='lprev' id='mLogoPrev'>${v ? `<img src='${esc(srcLogo(v))}' alt=''>` : '<span>Sin logo</span>'}</div><div><input type='file' id='mLogoF' accept='image/png,image/jpeg,image/webp'><div class='hint2'>PNG o JPG. Se ajusta el tamaño automáticamente. Se sube al presionar Guardar.</div></div></div></div>`;
+    const dis = t === 'code' && m.fija && !nuevo ? 'disabled' : '';
+    return `<div${t === 'text' && k === 'nombre' && tipo !== 'Estados' ? " class='full'" : ''}><div class='fl'>${lab}</div><input class='inp' id='${id}' value='${esc(v)}' ${t === 'number' ? "type='number' min='1'" : ''} ${dis} ${t === 'code' ? "style='text-transform:uppercase'" : ''}></div>`;
+  };
+  return `<div class='full sub'>${nuevo ? 'Agregar' : 'Editar'} · ${esc(m.tit)}</div>${m.campos.map(campo).join('')}
+    <div class='full'><button class='eb eb-p' id='mOk'>Guardar</button> <button class='eb eb-g' id='mCan'>Cancelar</button>${!nuevo && (tipo === 'Conductores' || tipo === 'Tractos' || tipo === 'Semirremolques' || tipo === 'Clientes') ? `<div class='hint2'>Si cambias el nombre o la patente, también se corrige en toda la programación ya cargada.</div>` : ''}</div>
+    <div class='full sep'></div>`;
+}
+let _logoNuevo = null;
+function montarFormMaestro(tipo, claveOriginal) {
+  const m = MAE[tipo]; _logoNuevo = null;
+  m.campos.filter(c => c[2] === 'color').forEach(c => {
+    const a = $('m_' + c[0]), b = $('m_' + c[0] + '_t');
+    a.oninput = () => { b.value = a.value; }; b.oninput = () => { if (/^#[0-9a-f]{6}$/i.test(b.value)) a.value = b.value; };
+  });
+  if ($('mLogoF')) $('mLogoF').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try { _logoNuevo = await reducirImagen(f); $('mLogoPrev').innerHTML = `<img src='data:${_logoNuevo.mime};base64,${_logoNuevo.base64}' alt=''>`; }
+    catch (err) { aviso(err.message, 'err'); e.target.value = ''; }
+  };
+  $('mCan').onclick = () => maestros(tipo);
+  $('mOk').onclick = e => ocupado(e.target, async () => {
+    const reg = {}, orig = claveOriginal === null || claveOriginal === undefined ? null : m.lista().find(r => String(r[m.clave]) === String(claveOriginal));
+    m.campos.forEach(([k, , t]) => {
+      if (t === 'logo') { reg.logo = orig ? orig.logo : ''; return; }
+      const el = $('m_' + k); if (!el) return;
+      reg[k] = t === 'bool' ? el.checked : (t === 'color' ? $('m_' + k + '_t').value.trim() : el.value.trim());
+    });
+    if (m.fija && orig) reg[m.clave] = orig[m.clave];
+    const res = await api('guardarMaestro', { tipo, registro: reg, claveOriginal: orig ? orig[m.clave] : undefined });
+    if (_logoNuevo) await api('subirLogo', { cliente: res.clave || reg.nombre, archivo: _logoNuevo });
+    await recargar();
+    aviso(`${m.tit}: ${res.clave || reg[m.clave]} guardado${res.actualizados ? ` (corregido en ${res.actualizados} registros)` : ''}`);
+    maestros(tipo);
+  });
+}
+// Reduce el logo a máx. 400×200 px y lo convierte a PNG (mantiene transparencia)
+function reducirImagen(file) {
+  return new Promise((ok, mal) => {
+    if (!/^image\/(png|jpeg|webp)$/.test(file.type)) return mal(new Error('Formato no permitido: usa PNG o JPG'));
+    if (file.size > 8e6) return mal(new Error('La imagen pesa más de 8 MB'));
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, 400 / img.width, 200 / img.height);
+      const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.width * k)); c.height = Math.max(1, Math.round(img.height * k));
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      ok({ mime: 'image/png', base64: c.toDataURL('image/png').split(',')[1] });
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); mal(new Error('No se pudo leer la imagen')); };
+    img.src = url;
+  });
+}
+function formConfig() {
+  const c = DB.config || {};
+  return `<div class='full sub'>Parámetros generales</div>
+    <div class='full'><div class='fl'>Título de la página</div><input class='inp' id='cfTit' value='${esc(c.Titulo || '')}'></div>
+    <div class='full'><div class='fl'>Empresa</div><input class='inp' id='cfEmp' value='${esc(c.Empresa || '')}'></div>
+    <div><div class='fl'>Días hacia atrás que se muestran</div><input class='inp' id='cfAtr' type='number' min='0' max='365' value='${esc(c.DiasAtras || '7')}'></div>
+    <div><div class='fl'>Días hacia adelante que se muestran</div><input class='inp' id='cfAde' type='number' min='1' max='365' value='${esc(c.DiasAdelante || '28')}'></div>
+    <div class='full'><button class='eb eb-p' id='cfOk'>Guardar configuración</button></div>`;
+}
+function montarConfig() {
+  $('cfOk').onclick = e => ocupado(e.target, async () => {
+    await api('guardarConfig', { config: { Titulo: $('cfTit').value, Empresa: $('cfEmp').value, DiasAtras: $('cfAtr').value, DiasAdelante: $('cfAde').value } });
+    rangoManual = false; await cargar(); aviso('Configuración guardada'); maestros('Config');
+  });
+}
 
 </script>
 </body>
