@@ -221,6 +221,40 @@ tr.fila-oculta td > *{opacity:.55}
 .ccount{text-align:right}
 </style>
 <style id='dynCss'></style>
+<style>
+/* ===== Bitácora diaria (v3.2) ===== */
+.ic-bt{background:#ebeafd;color:#4338ca}
+.smc-bt{border-color:#d9d8f3;cursor:pointer;transition:box-shadow .15s}
+.smc-bt:hover{box-shadow:0 0 0 2px #818cf8}
+.smc-bt .smh{background:#f4f3fd;color:#3730a3}.smc-bt .dot{background:#6366f1}
+.smc-bt .smb{display:block}
+.smc-bt .btv{text-align:center;font-size:11.5px;font-weight:800;color:#4338ca;padding:4px 0}
+.smc-bt.vac{background:#f6f6fb;border-style:dashed}
+.smc-bt.vac .smb{text-align:center;color:#9aa6b4;font-weight:700;font-size:11px;padding:10px 6px}
+.bt-list{display:flex;flex-direction:column;gap:8px}
+.bti{display:flex;gap:12px;background:#0a1c33;border:1px solid #1f3a5f;border-left:4px solid #6366f1;border-radius:9px;padding:10px 12px}
+.bti.edi{border-color:#1e6fa8;box-shadow:0 0 0 2px #1e6fa8}
+.bti .hr{flex:0 0 auto;font-size:13px;font-weight:800;color:#c7d2fe;background:#1e1b4b;border-radius:6px;padding:4px 8px;height:fit-content}
+.bti .tx{font-size:13px;line-height:1.5;color:#e8eef7;white-space:pre-wrap;word-break:break-word}
+.bti .mt{font-size:11px;color:#8ba2be;margin-top:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.bti .mt .sp{flex:1}
+.bt-new{background:#0a1c33;border:1px dashed #3b5b85;border-radius:10px;padding:12px;display:grid;grid-template-columns:96px 1fr;gap:10px}
+.bt-new .full{grid-column:1/-1}
+.bt-new .acc{display:flex;justify-content:flex-end;gap:8px}
+.bt-vacio{text-align:center;color:#8ba2be;font-size:13px;padding:22px 0}
+/* ===== Detalle fuera de servicio (v3.2) ===== */
+.smc-fs .pt{cursor:pointer;transition:background .15s}
+.smc-fs .pt:hover{background:#fde8ec;border-color:#f0a8b6;color:#9f1239}
+.fsd{display:flex;align-items:center;gap:14px;background:#2a0f17;border:1px solid #7f1d1d;border-radius:10px;padding:12px 14px}
+.fsd .ic{width:42px;height:42px;border-radius:50%;background:#7f1d1d;color:#fecaca;display:flex;align-items:center;justify-content:center;flex:0 0 42px}
+.fsd .ic svg{width:20px;height:20px}
+.fsd .pp{font-size:20px;font-weight:800;letter-spacing:1px}
+.fsd .ss{font-size:12px;color:#fca5a5;margin-top:2px}
+.fsk{background:#0a1c33;border:1px solid #1f3a5f;border-radius:9px;padding:10px 12px}
+.fsk .v{font-size:14px;font-weight:700;color:#e8eef7;margin-top:2px;line-height:1.45;word-break:break-word}
+@media(max-width:820px){ .smc-bt .btv{font-size:9px}.smc-bt.vac .smb{font-size:8.5px;padding:6px 3px}.bt-new{grid-template-columns:1fr} }
+@media(min-width:1800px){ .smc-bt .btv{font-size:13px}.smc-bt.vac .smb{font-size:12.5px} }
+</style>
 </head>
 <body>
 <div class='wrap'>
@@ -463,7 +497,8 @@ function filasResumen(porDia) {
       }).join('') + '</tr>';
   };
   return fila('smc-fs', 'ic-fs', 'Fuera de servicio', SVG_LLAVE, f => porDia[f].fs, true) +
-         fila('smc-dp', 'ic-dp', 'Disponibles', SVG_OKTRUCK, f => porDia[f].disp, false);
+         fila('smc-dp', 'ic-dp', 'Disponibles', SVG_OKTRUCK, f => porDia[f].disp, false) +
+         filaBitacora();
 }
 
 function logoFail(im) {
@@ -1248,6 +1283,105 @@ async function guardarMovimiento(celdas, previo, msg) {
   finally { document.body.classList.remove('guardando'); }
 }
 
+
+// ============================================================
+//  BITÁCORA DIARIA (v3.2) — lectura pública, edición con PIN
+// ============================================================
+const SVG_BOOK = `<svg viewBox='0 0 24 24' fill='currentColor'><path d='M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3Zm0 2a1 1 0 0 0-1 1v11.2A3 3 0 0 1 6 16h12V4H6Zm0 14a1 1 0 0 0 0 2h12v-2H6Zm3-11h7v2H9V7Zm0 4h5v2H9v-2Z'/></svg>`;
+const DIAS_LARGOS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const MAX_BITACORA = 500;
+const diaLargo = f => DIAS_LARGOS[desdeIso(f).getDay()] + ' ' + fechaCorta(f);
+const bitDe = f => (DB.bitacora || []).filter(b => b.fecha === f).sort((a, b) => (a.hora + a.id) < (b.hora + b.id) ? -1 : 1);
+const horaAhora = () => { const d = new Date(); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+
+// Fila "Bitácora" al final de la tabla (se agrega desde filasResumen)
+function filaBitacora() {
+  const hoy = hoyIso(), nHoy = DIAS.indexOf(hoy) >= 0 ? bitDe(hoy).length : null;
+  return `<tr class='sumrow'><td class='c1' colspan='3'><div class='sumt'><span class='sumic ic-bt'>${SVG_BOOK}</span><div><div class='sumn'>Bitácora</div>${nHoy != null ? `<div class='sums'>Hoy: <b>${nHoy}</b> ${nHoy === 1 ? 'novedad' : 'novedades'}</div>` : ''}</div></div></td>` +
+    DIAS.map(f => {
+      const n = bitDe(f).length;
+      if (!n) return `<td class='day' data-f='${f}'><div class='smc smc-bt vac' data-bit='${f}' title='${EDIT ? 'Registrar una novedad' : 'Sin novedades este día'}'><div class='smb'>Sin Novedades</div></div></td>`;
+      return `<td class='day' data-f='${f}'><div class='smc smc-bt' data-bit='${f}'><div class='smh'><span class='dot'></span>${n} ${n === 1 ? 'novedad' : 'novedades'}</div><div class='smb'><div class='btv'>📓 Ver Novedades ›</div></div></div></td>`;
+    }).join('') + '</tr>';
+}
+
+// Ventana de la bitácora de un día. editarId: novedad que se está modificando; msgOk: aviso tras guardar
+function abrirBitacora(f, editarId, msgOk) {
+  const l = bitDe(f), i = DIAS.indexOf(f);
+  const ed = editarId ? l.find(b => b.id === editarId) : null;
+  const form = EDIT ? `
+    <div class='full sub'>${ed ? 'Modificar novedad' : 'Nueva novedad'}</div>
+    <div class='full bt-new'>
+      ${msgOk ? `<div class='full okbox'>✓ ${esc(msgOk)}</div>` : ''}
+      <div><div class='fl'>Hora</div><input id='btHora' class='inp' type='time' value='${esc(ed ? ed.hora : (f === hoyIso() ? horaAhora() : ''))}'></div>
+      <div><div class='fl'>¿Qué pasó?</div><textarea id='btTxt' class='inp txa' maxlength='${MAX_BITACORA}' placeholder='Ej.: Tracto detenido en control de carretera, retraso de 1 h'>${esc(ed ? ed.texto : '')}</textarea><div class='hint2' id='btN'></div></div>
+      <div class='full acc'>${ed ? `<button class='eb eb-g' id='btCan'>Cancelar edición</button>` : ''}<button class='eb eb-p' id='btOk'>💾 ${ed ? 'Guardar cambios' : 'Guardar novedad'}</button></div>
+    </div>` : '';
+  const lista = l.length ? `<div class='full bt-list'>${l.map(b => `
+      <div class='bti${ed && ed.id === b.id ? ' edi' : ''}'><div class='hr'>${esc(b.hora || '--:--')}</div><div style='flex:1;min-width:0'>
+        <div class='tx'>${esc(b.texto)}</div>
+        <div class='mt'>Registrado por ${esc(b.autor || '—')}<span class='sp'></span>${EDIT ? `<button class='lnk' data-bted='${esc(b.id)}'>Editar</button><button class='lnk rojo' data-btdel='${esc(b.id)}'>Eliminar</button>` : ''}</div>
+      </div></div>`).join('')}</div>` : `<div class='full bt-vacio'>Sin novedades registradas este día.</div>`;
+  abrirModal(`📓 Bitácora · ${diaLargo(f)}`, `Hechos relevantes del día · ${l.length} ${l.length === 1 ? 'novedad' : 'novedades'}`,
+    form + `<div class='full sub'>Novedades del día (${l.length})</div>` + lista,
+    `<button class='eb eb-g' id='btAnt'${i > 0 ? '' : ' disabled'}>‹ Día anterior</button><button class='eb eb-g' id='btSig'${i >= 0 && i < DIAS.length - 1 ? '' : ' disabled'}>Día siguiente ›</button><span class='sp' style='flex:1'></span><button class='eb eb-g' data-cerrar>Cerrar</button>`, 620);
+
+  $('btAnt').onclick = () => abrirBitacora(DIAS[i - 1]);
+  $('btSig').onclick = () => abrirBitacora(DIAS[i + 1]);
+  if (!EDIT) return;
+  const txt = $('btTxt'), cnt = () => { $('btN').textContent = txt.value.length + ' / ' + MAX_BITACORA; };
+  txt.addEventListener('input', cnt); cnt();
+  if (!ed) txt.focus();
+  const guardar = () => ocupado($('btOk'), async () => {
+    const texto = txt.value.trim(), hora = $('btHora').value;
+    if (!texto) { aviso('Escribe la novedad antes de guardar', 'err'); txt.focus(); return; }
+    if (!hora) { aviso('Indica la hora de la novedad', 'err'); $('btHora').focus(); return; }
+    await api('guardarBitacora', { bitacora: { id: ed ? ed.id : undefined, fecha: f, hora, texto } });
+    await recargar();
+    abrirBitacora(f, null, ed ? 'Novedad modificada.' : 'Novedad guardada. Puedes escribir la siguiente.');
+  });
+  $('btOk').onclick = guardar;
+  txt.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) guardar(); });   // Ctrl+Enter guarda
+  if ($('btCan')) $('btCan').onclick = () => abrirBitacora(f);
+  document.querySelectorAll('#ovl [data-bted]').forEach(b => { b.onclick = () => abrirBitacora(f, b.dataset.bted); });
+  document.querySelectorAll('#ovl [data-btdel]').forEach(b => {
+    b.onclick = () => {
+      if (!confirmar('¿Eliminar esta novedad de la bitácora?')) return;
+      ocupado(b, async () => { await api('eliminarBitacora', { id: b.dataset.btdel }); await recargar(); abrirBitacora(f, null, 'Novedad eliminada.'); });
+    };
+  });
+}
+
+// ============================================================
+//  DETALLE FUERA DE SERVICIO (v3.2) — clic en la patente
+// ============================================================
+function detalleFS(tracto, f) {
+  const x = DB.fueraServicio.find(r => r.tracto === tracto && r.desde <= f && r.hasta >= f); if (!x) return;
+  const dias = Math.round((desdeIso(x.hasta) - desdeIso(x.desde)) / 864e5) + 1;
+  const vuelve = sumarDias(x.hasta, 1);
+  abrirModal('⛔ Fuera de servicio', 'Detalle del período', `
+    <div class='full fsd'><span class='ic'>${SVG_LLAVE}</span><div><div class='pp'>${esc(x.tracto)}</div><div class='ss'>${dias} ${dias === 1 ? 'día' : 'días'} fuera de servicio</div></div></div>
+    <div class='full fsk'><div class='fl'>Motivo</div><div class='v'>${esc(x.motivo || 'Sin motivo indicado')}</div></div>
+    <div class='fsk'><div class='fl'>Desde</div><div class='v'>${diaLargo(x.desde)}</div></div>
+    <div class='fsk'><div class='fl'>Hasta</div><div class='v'>${diaLargo(x.hasta)}</div></div>
+    <div class='full hint2'>Disponible nuevamente desde el ${diaLargo(vuelve).toLowerCase()}.</div>`,
+    `${EDIT ? `<button class='eb del' id='fsdDel'>Eliminar período</button><button class='eb eb-s' id='fsdEd'>✏ Editar</button>` : ''}<span class='sp' style='flex:1'></span><button class='eb eb-g' data-cerrar>Cerrar</button>`, 460);
+  if (!EDIT) return;
+  $('fsdEd').onclick = () => fueraServicio(x.id);
+  $('fsdDel').onclick = e => {
+    if (!confirmar('¿Eliminar este período fuera de servicio?')) return;
+    ocupado(e.target, async () => { await api('eliminarFS', { id: x.id }); await recargar(); cerrarModal(); aviso('Período eliminado'); });
+  };
+}
+
+// Clics de la vista pública (funcionan con o sin modo edición)
+document.addEventListener('click', e => {
+  if (!DB) return;
+  const bt = e.target.closest('#body [data-bit]');
+  if (bt) { abrirBitacora(bt.dataset.bit); return; }
+  const pt = e.target.closest('#body .smc-fs .pt');
+  if (pt) detalleFS(pt.textContent.trim(), pt.closest('td').dataset.f);
+});
 </script>
 </body>
 </html>
