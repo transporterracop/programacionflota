@@ -255,6 +255,13 @@ tr.fila-oculta td > *{opacity:.55}
 @media(max-width:820px){ .smc-bt .btv{font-size:9px}.smc-bt.vac .smb{font-size:8.5px;padding:6px 3px}.bt-new{grid-template-columns:1fr} }
 @media(min-width:1800px){ .smc-bt .btv{font-size:13px}.smc-bt.vac .smb{font-size:12.5px} }
 </style>
+<style>
+/* ===== Orden automático de filas (v3.3) ===== */
+#hrow th.day{cursor:pointer}
+#hrow th.day:hover{background:#163257}
+#hrow th.th-ord{box-shadow:inset 0 -3px 0 #38bdf8}
+#hrow th.th-ord .d2::after{content:' ⇅';color:#38bdf8}
+</style>
 </head>
 <body>
 <div class='wrap'>
@@ -313,6 +320,8 @@ let cargando = false;
 let rangoManual = false;
 let EDIT = null;          // sesión de edición {pin, nombre, rol} o null
 let VER_OCULTOS = false;  // en modo edición: mostrar los viajes ocultos
+let ORDEN_DIA = null;      // día elegido para ordenar las filas (null = hoy)
+let ORDEN_MANUAL = false;  // en modo edición: ver el orden manual para arrastrar filas
 const filasVisibles = () => DB.filas.filter(f => !f.oculta || (EDIT && VER_OCULTOS));
 const SVG_LLAVE = `<svg viewBox='0 0 24 24' fill='currentColor'><path d='M22.7 19.3 13.6 10.2a6 6 0 0 0-7.8-7.6l3.9 3.9-2.8 2.8-3.9-3.9a6 6 0 0 0 7.6 7.8l9.1 9.1a1 1 0 0 0 1.4 0l1.6-1.6a1 1 0 0 0 0-1.4Z'/></svg>`;
 const SVG_OKTRUCK = `<svg viewBox='0 0 24 24' fill='currentColor'><path d='M2 6h11v9H2V6Zm12 3h4l3 4v3h-7V9ZM6.5 20a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Zm11 0a1.8 1.8 0 1 0 0-3.6 1.8 1.8 0 0 0 0 3.6Z'/><circle cx='18.5' cy='5.5' r='4.5' fill='#fff'/><path d='m16.6 5.5 1.3 1.3 2.6-2.6' fill='none' stroke='currentColor' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>`;
@@ -451,10 +460,10 @@ function render() {
 
   // Cabecera de la tabla
   $('hrow').innerHTML = `<th class='c1'>Cliente</th><th class='c2'>Origen</th><th class='c3'>Destino</th>` +
-    DIAS.map(f => `<th class='day' data-f='${f}'>${DIAS_SEM[desdeIso(f).getDay()]}<span class='d2'>${fechaCorta(f)}</span><span class='d3' style='display:block;font-size:9px;font-weight:700;color:#0ea5e9;margin-top:2px'>${porDia[f].disp.length} disp.</span></th>`).join('');
+    DIAS.map(f => `<th class='day${!ORDEN_MANUAL && f === diaOrden() ? ' th-ord' : ''}' data-f='${f}' title='Ordenar las filas según este día'>${DIAS_SEM[desdeIso(f).getDay()]}<span class='d2'>${fechaCorta(f)}</span><span class='d3' style='display:block;font-size:9px;font-weight:700;color:#0ea5e9;margin-top:2px'>${porDia[f].disp.length} disp.</span></th>`).join('');
 
   // Cuerpo
-  const FILAS = filasVisibles();
+  const FILAS = ordenarPorMovimiento(filasVisibles(), celdas);
   if (!FILAS.length) {
     $('body').innerHTML = `<tr><td colspan='${DIAS.length + 3}' class='vacio'><div class='vacio-in'>Aún no hay viajes programados.<span>Cuando se agreguen filas de viaje desde el modo edición aparecerán aquí.</span></div></td></tr>` + (EDIT ? filaAgregar() : '') + filasResumen(porDia);
   } else {
@@ -464,7 +473,7 @@ function render() {
       const logo = src
         ? `<div class='logoimg'><img src='${esc(src)}' alt='${esc(fl.cliente)}' data-bg='${esc(col)}' data-fg='${esc(fg)}' data-ini='${ini}' onerror='logoFail(this)'></div>`
         : `<div class='logo' style='background:${esc(col)};color:${esc(fg)}'>${ini}</div>`;
-      let tds = `<td class='c1${EDIT ? ' c1ed' : ''}' data-filaed='${fl.id}'>${EDIT ? `<span class='drag-h' title='Arrastrar para cambiar la posición de la fila'>⠿</span><span class='pen pen-c'>${SVG_PEN}</span>` : ''}<div class='cli'><div class='nm'>${esc(fl.cliente)}</div>${logo}${fl.oculta ? `<span class='tag-oc'>OCULTO</span>` : ''}</div></td><td class='c2 od'>${esc(fl.origen)}</td><td class='c3 od'>${esc(fl.destino)}</td>`;
+      let tds = `<td class='c1${EDIT ? ' c1ed' : ''}' data-filaed='${fl.id}'>${EDIT && ORDEN_MANUAL ? `<span class='drag-h' title='Arrastrar para cambiar la posición de la fila'>⠿</span><span class='pen pen-c'>${SVG_PEN}</span>` : ''}<div class='cli'><div class='nm'>${esc(fl.cliente)}</div>${logo}${fl.oculta ? `<span class='tag-oc'>OCULTO</span>` : ''}</div></td><td class='c2 od'>${esc(fl.origen)}</td><td class='c3 od'>${esc(fl.destino)}</td>`;
       tds += DIAS.map(f => {
         const p = celdas[fl.id + '|' + f], st = estadoDia(f);
         if (!p) return `<td class='day' data-f='${f}' data-fila='${fl.id}'><div class='ev ev-off' data-con='S/M'><div class='bd'><div class='li off-li'>${EDIT ? '<span class="add">＋ Asignar</span>' : 'Sin movimiento'}</div></div></div></td>`;
@@ -646,6 +655,7 @@ function pedirPin() {
   o.querySelectorAll('[data-cerrar]').forEach(b => b.addEventListener('click', cerrarModal));
 }
 function salirEdicion(porError) {
+  ORDEN_MANUAL = false;
   EDIT = null; VER_OCULTOS = false; try { sessionStorage.removeItem(SES_KEY); } catch (e) { /* nada */ }
   cerrarModal(); if (DB) render();
   if (porError) aviso('La sesión de edición se cerró: vuelve a ingresar tu PIN', 'err');
@@ -664,12 +674,13 @@ function despuesDeRender() {
   bar.className = 'edbar';
   bar.innerHTML = `<span class='pill'><i></i>Modo edición</span><span class='who'>${esc(EDIT.nombre)} · ${EDIT.rol === 'admin' ? 'Administrador' : 'Editor'}</span><span class='sp'></span>
     <button class='eb eb-p' id='bNuevo'>＋ Nuevo viaje</button><button class='eb eb-s' id='bCopiar'>⧉ Copiar días</button>
-    <button class='eb eb-r' id='bFS'>⛔ Fuera de servicio</button><button class='eb eb-c' id='bCopDat'>📋 Copiar datos</button><button class='eb eb-o${VER_OCULTOS ? ' on' : ''}' id='bOcu' title='Mostrar u ocultar los viajes ocultos'>👁 Ocultos (${DB.filas.filter(f => f.oculta).length})</button><button class='eb eb-g' id='bMae'>⚙ Maestros</button><button class='eb eb-g' id='bSalir'>Salir</button>`;
+    <button class='eb eb-r' id='bFS'>⛔ Fuera de servicio</button><button class='eb eb-c' id='bCopDat'>📋 Copiar datos</button><button class='eb eb-o${VER_OCULTOS ? ' on' : ''}' id='bOcu' title='Mostrar u ocultar los viajes ocultos'>👁 Ocultos (${DB.filas.filter(f => f.oculta).length})</button><button class='eb eb-o${ORDEN_MANUAL ? ' on' : ''}' id='bOrd' title='Ver el orden manual para arrastrar filas'>⇅ Orden manual</button><button class='eb eb-g' id='bMae'>⚙ Maestros</button><button class='eb eb-g' id='bSalir'>Salir</button>`;
   $('bNuevo').onclick = () => editarFila(null);
   $('bCopiar').onclick = copiarDias;
   $('bFS').onclick = () => fueraServicio();
   $('bCopDat').onclick = () => copiarDatos();
   $('bOcu').onclick = () => { VER_OCULTOS = !VER_OCULTOS; render(); };
+  $('bOrd').onclick = () => { ORDEN_MANUAL = !ORDEN_MANUAL; render(); aviso(ORDEN_MANUAL ? 'Orden manual: arrastra las filas con ⠿' : 'Orden automático según movimiento'); };
   $('bMae').onclick = () => maestros('Conductores');
   $('bSalir').onclick = () => salirEdicion(false);
 }
@@ -1381,6 +1392,36 @@ document.addEventListener('click', e => {
   if (bt) { abrirBitacora(bt.dataset.bit); return; }
   const pt = e.target.closest('#body .smc-fs .pt');
   if (pt) detalleFS(pt.textContent.trim(), pt.closest('td').dataset.f);
+});
+
+// ============================================================
+//  ORDEN AUTOMÁTICO DE FILAS (v3.3)
+//  1° filas con viaje el día de referencia · 2° por fecha del próximo viaje · 3° sin viajes en el rango.
+//  Dentro de cada grupo se respeta el orden manual (el de arrastrar).
+// ============================================================
+function diaOrden() {
+  if (ORDEN_DIA && DIAS.indexOf(ORDEN_DIA) >= 0) return ORDEN_DIA;
+  const h = hoyIso(); return DIAS.indexOf(h) >= 0 ? h : DIAS[0];
+}
+function ordenarPorMovimiento(filas, celdas) {
+  if (EDIT && ORDEN_MANUAL) return filas;
+  const ref = diaOrden(), futuros = DIAS.filter(f => f >= ref);
+  const clave = fl => {
+    if (celdas[fl.id + '|' + ref]) return '0';
+    const prox = futuros.find(f => celdas[fl.id + '|' + f]);
+    return prox ? '1' + prox : '2';
+  };
+  return filas.map((fl, i) => ({ fl, i, k: clave(fl) }))
+    .sort((a, b) => a.k < b.k ? -1 : a.k > b.k ? 1 : a.i - b.i).map(x => x.fl);
+}
+// Clic en el encabezado de un día: ordena según ese día (otro clic vuelve a hoy)
+document.addEventListener('click', e => {
+  const th = e.target.closest('#hrow th.day'); if (!th || !DB) return;
+  if (EDIT && ORDEN_MANUAL) { aviso('Desactiva "⇅ Orden manual" para ordenar por día'); return; }
+  const f = th.dataset.f;
+  ORDEN_DIA = (f === diaOrden() && ORDEN_DIA) ? null : (f === hoyIso() ? null : f);
+  render();
+  aviso('Filas ordenadas según ' + (ORDEN_DIA ? diaLargo(ORDEN_DIA) : 'hoy'));
 });
 </script>
 </body>
